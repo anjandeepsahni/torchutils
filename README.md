@@ -1,2 +1,3 @@
-# pytorch_utils
-Utilities for PyTorch.
+# torchutils
+
+PyTorch utility functions.
