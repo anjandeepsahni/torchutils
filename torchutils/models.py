@@ -2,6 +2,20 @@ import torch
 import torch.nn as nn
 
 def get_model_param_count(model):
+    """
+    Count total paremeters in the PyTorch model.
+
+    Parameters
+    ----------
+    model : nn.Module
+        PyTorch model.
+
+    Returns
+    -------
+    int
+        Number of parameters in the model.
+    """
+
     if model and not isinstance(model, nn.Module):
         raise TypeError('Model must be nn.Module, but got {}.'.format(type(model)))
     param_count = 0

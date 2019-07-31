@@ -1,3 +1,0 @@
-# torchutils
-
-PyTorch utility functions.

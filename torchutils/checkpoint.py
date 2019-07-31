@@ -100,9 +100,63 @@ class Checkpoint():
         return start_epoch, self.model, self.optimizer, self.scheduler
 
 def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None, metric=0):
+    """
+    Save checkpoint.
+
+    Parameters
+    ----------
+    epoch : int
+        Epoch/iteration number.
+    model_path : str
+        Path for saving the model.
+    model : nn.Module
+        PyTorch model.
+    optimizer : optim.Optimizer, optional
+        PyTorch optimizer. (default: None)
+    scheduler : optim.lr_scheduler._LRScheduler, optional
+        PyTorch scheduler. (default: None)
+    metric : float, optional
+        Metric, for example, validation accuracy. (default: 0)
+
+    Returns
+    -------
+    None
+        Nothing.
+    """
+
     ckpt = Checkpoint(epoch=epoch, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
     ckpt.save(metric=metric)
 
 def load_checkpoint(model_path, ckpt_name, model, optimizer=None, scheduler=None, device=None):
+    """
+    Load checkpoint.
+
+    Parameters
+    ----------
+    model_path : str
+        Path for loading the model.
+    ckpt_name : str
+        Checkpoint file name.
+    model : nn.Module
+        PyTorch model.
+    optimizer : optim.Optimizer, optional
+        PyTorch optimizer. (default: None)
+    scheduler : optim.lr_scheduler._LRScheduler, optional
+        PyTorch scheduler. (default: None)
+    device : str, optional
+        Device to map the checkpoint, "cpu" or "cuda". (default: None)
+
+    Returns
+    -------
+    int
+        Start epoch/iteration number.
+    nn.Module
+        PyTorch model.
+    optim.Optimizer
+        PyTorch optimizer.
+    optim.lr_scheduler._LRScheduler
+        PyTorch scheduler.
+    """
+
     ckpt = Checkpoint(epoch=0, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
     return ckpt.load(ckpt_name, device)
