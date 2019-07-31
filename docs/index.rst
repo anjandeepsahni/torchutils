@@ -6,6 +6,7 @@ TorchUtils Documentation
    :Caption: Notes
 
    readme
+   changelog
 
 .. toctree::
    :maxdepth: 2
