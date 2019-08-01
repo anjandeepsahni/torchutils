@@ -8,6 +8,8 @@ TorchUtils
 .. image:: https://travis-ci.org/anjandeepsahni/pytorch_utils.svg?branch=master
     :target: https://travis-ci.org/anjandeepsahni/pytorch_utils
 
+|
+
 **TorchUtils** is a Python package providing helpful utility functions for your
 PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
 trivial but useful functionality so that you don't have to.
