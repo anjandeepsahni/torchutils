@@ -3,10 +3,10 @@
 language: python
 
 python:
-  - "3.6"
+    - "3.6"
 
-# install:            # Install requirement as "Environment Setup Section"
-# - pip install -r sphinx_root/requirements.txt
+install:            # Install requirement as "Environment Setup Section"
+    - pip install -r docs/requirements.txt
 
 script:             # build sphinx document
     - cd docs/
