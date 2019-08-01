@@ -5,6 +5,9 @@ TorchUtils
 .. image:: https://badge.fury.io/py/torchutils.svg
     :target: https://badge.fury.io/py/torchutils
 
+.. image:: https://travis-ci.org/anjandeepsahni/pytorch_utils.svg?branch=master
+    :target: https://travis-ci.org/anjandeepsahni/pytorch_utils
+
 **TorchUtils** is a Python package providing helpful utility functions for your
 PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
 trivial but useful functionality so that you don't have to.
@@ -24,7 +27,7 @@ Installation
 
 Documentation
 -------------
-API documentation is available at: http://torchutils.github.io
+API documentation is available at: https://anjandeepsahni.github.io/pytorch_utils/
 
 License
 -------
