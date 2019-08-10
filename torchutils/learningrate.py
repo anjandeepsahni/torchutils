@@ -1,9 +1,5 @@
 import torch
-import torch.optim as optim
-
-def _validate_optimizer(val):
-    if val and not isinstance(val, optim.Optimizer):
-        raise TypeError('Optimizer must be optim.Optimizer, but got {}.'.format(type(val)))
+from _validate import _validate_param
 
 def get_current_lr(optimizer):
     """
@@ -20,7 +16,7 @@ def get_current_lr(optimizer):
         Learning rate of the optimizer.
     """
 
-    _validate_optimizer(optimizer)
+    _validate_param(optimizer, 'optimizer', 'optimizer')
     return optimizer.param_groups[0]['lr']
 
 def set_current_lr(optimizer, lr):
@@ -40,7 +36,8 @@ def set_current_lr(optimizer, lr):
         PyTorch optimizer.
     """
 
-    _validate_optimizer(optimizer)
+    _validate_param(optimizer, 'optimizer', 'optimizer')
+    _validate_param(lr, 'lr', 'float')
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
     return optimizer

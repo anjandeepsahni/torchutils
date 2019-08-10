@@ -1,5 +1,4 @@
-import torch
-import torch.nn as nn
+from _validate import _validate_param
 
 def get_model_param_count(model):
     """
@@ -16,8 +15,7 @@ def get_model_param_count(model):
         Number of parameters in the model.
     """
 
-    if model and not isinstance(model, nn.Module):
-        raise TypeError('Model must be nn.Module, but got {}.'.format(type(model)))
+    _validate_param(model, 'model', 'model')
     param_count = 0
     for p in model.parameters():
         val = p.size(0)

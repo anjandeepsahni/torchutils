@@ -1,8 +1,7 @@
 import os
 import time
 import torch
-import torch.nn as nn
-import torch.optim as optim
+from _validate import _validate_param
 
 class Checkpoint():
     def __init__(self, epoch, model_path, model, optimizer=None, scheduler=None):
@@ -22,10 +21,9 @@ class Checkpoint():
 
     @epoch.setter
     def epoch(self, val):
+        _validate_param(val, 'epoch', 'int')
         if val<0:
             raise ValueError('Epoch value must be positive, but got value: {}'.format(val))
-        if not isinstance(val, int):
-            raise TypeError('Epoch number must be int, but got {}.'.format(type(val)))
         self._epoch = val
 
     @property
@@ -34,8 +32,7 @@ class Checkpoint():
 
     @model_path.setter
     def model_path(self, val):
-        if not isinstance(val, str):
-            raise TypeError('Model path must be str, but got {}.'.format(type(val)))
+        _validate_param(val, 'model_path, 'str')
         self._model_path = val
 
     @property
@@ -44,8 +41,7 @@ class Checkpoint():
 
     @model.setter
     def model(self, val):
-        if val and not isinstance(val, nn.Module):
-            raise TypeError('Model must be nn.Module, but got {}.'.format(type(val)))
+        _validate_param(val, 'model', 'model')
         self._model = val
 
     @property
@@ -54,8 +50,7 @@ class Checkpoint():
 
     @optimizer.setter
     def optimizer(self, val):
-        if val and not isinstance(val, optim.Optimizer):
-            raise TypeError('Optimizer must be optim.Optimizer, but got {}.'.format(type(val)))
+        _validate_param(val, 'optimizer', 'optimizer')
         self._optimizer = val
 
     @property
@@ -64,9 +59,7 @@ class Checkpoint():
 
     @scheduler.setter
     def scheduler(self, val):
-        if val and not isinstance(val, optim.lr_scheduler._LRScheduler) and \
-            not isinstance(val, optim.lr_scheduler.ReduceLROnPlateau):
-            raise TypeError('Scheduler must be optim.lr_scheduler._LRScheduler, but got {}.'.format(type(val)))
+        _validate_param(val, 'scheduler', 'scheduler')
         self._scheduler = val
 
     def save(self, metric=0):

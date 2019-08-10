@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from _validate import _validate_param
 
 def set_random_seed(seed):
     """
@@ -16,8 +17,7 @@ def set_random_seed(seed):
         Nothing.
     """
 
-    if not isinstance(seed, int):
-        raise TypeError('Seed value must be int, but got {}.'.format(type(seed)))
+    _validate_param(seed, 'seed', 'int')
     np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
