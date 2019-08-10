@@ -1,9 +1,11 @@
-import os
-import time
-import torch
+import os as _os
+import time as _time
+import torch as _torch
 from ._validate import _validate_param
 
-class Checkpoint():
+__all__ = ['save_checkpoint', 'load_checkpoint']
+
+class _Checkpoint():
     def __init__(self, epoch, model_path, model, optimizer=None, scheduler=None):
         self.epoch = epoch
         self.model_path = model_path
@@ -68,21 +70,21 @@ class Checkpoint():
         if self.optimizer: self._state['optimizer'] = self.optimizer.state_dict()
         if self.scheduler: self._state['scheduler'] = self.scheduler.state_dict()
         metric_str = '%.4f'%(metric)
-        if not os.path.exists(self.model_path):
-            os.makedirs(self.model_path)
-        model_path = os.path.join(self.model_path,
-                    'model_{}_e{}_{}.pt'.format(time.strftime("%Y%m%d-%H%M%S"), \
+        if not _os.path.exists(self.model_path):
+            _os.makedirs(self.model_path)
+        model_path = _os.path.join(self.model_path,
+                    'model_{}_e{}_{}.pt'.format(_time.strftime("%Y%m%d-%H%M%S"), \
                     (str(self.epoch)), metric_str))
-        torch.save(self._state, model_path)
+        _torch.save(self._state, model_path)
 
     def load(self, ckpt, device=None):
-        ckpt_path = os.path.join(self.model_path, ckpt)
-        if not os.path.exists(ckpt_path):
+        ckpt_path = _os.path.join(self.model_path, ckpt)
+        if not _os.path.exists(ckpt_path):
             raise ValueError('Checkpoint file does not exist: {}'.format(ckpt_path))
         if device:
-            ckpt_dict = torch.load(ckpt_path, map_location=device)
+            ckpt_dict = _torch.load(ckpt_path, map_location=device)
         else:
-            ckpt_dict = torch.load(ckpt_path)
+            ckpt_dict = _torch.load(ckpt_path)
         start_epoch = ckpt_dict['epoch'] + 1
         if self.model and ckpt_dict['model']:
             self.model.load_state_dict(ckpt_dict['model'])
@@ -117,7 +119,7 @@ def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None, me
         Nothing.
     """
 
-    ckpt = Checkpoint(epoch=epoch, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
+    ckpt = _Checkpoint(epoch=epoch, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
     ckpt.save(metric=metric)
 
 def load_checkpoint(model_path, ckpt_name, model, optimizer=None, scheduler=None, device=None):
@@ -151,5 +153,5 @@ def load_checkpoint(model_path, ckpt_name, model, optimizer=None, scheduler=None
         PyTorch scheduler.
     """
 
-    ckpt = Checkpoint(epoch=0, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
+    ckpt = _Checkpoint(epoch=0, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
     return ckpt.load(ckpt_name, device)

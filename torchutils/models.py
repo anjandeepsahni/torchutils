@@ -1,5 +1,7 @@
 from ._validate import _validate_param
 
+__all__ = ['get_model_param_count']
+
 def get_model_param_count(model):
     """
     Count total parameters in the PyTorch model.

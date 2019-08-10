@@ -1,15 +1,15 @@
-import torch.nn as nn
-import torch.optim as optim
+import torch.nn as _nn
+import torch.optim as _optim
 
 def _validate_param(val, name, paramType):
     supportedTypes = {
         'int': int,
         'str': str,
         'float': float,
-        'model': nn.Module,
-        'optimizer': optim.Optimizer,
-        'scheduler': [optim.lr_scheduler._LRScheduler,
-                    optim.lr_scheduler.ReduceLROnPlateau]
+        'model': _nn.Module,
+        'optimizer': _optim.Optimizer,
+        'scheduler': [_optim.lr_scheduler._LRScheduler,
+                    _optim.lr_scheduler.ReduceLROnPlateau]
         }
     if paramType not in supportedTypes:
         raise TypeError(('INTERNAL ERROR: paramType must be one of {}, but got {}. '

@@ -1,6 +1,7 @@
-import torch
-import warnings
+import warnings as _warnings
 from ._validate import _validate_param
+
+__all__ = ['get_lr', 'set_lr', 'get_current_lr', 'set_current_lr']
 
 def get_lr(optimizer):
     """
@@ -45,16 +46,16 @@ def set_lr(optimizer, lr):
 ########################################################################
 
 def get_current_lr(optimizer):
-    warnings.simplefilter('always', DeprecationWarning)
-    warnings.warn(('torchutils.get_current_lr is deprecated. '
+    _warnings.simplefilter('always', DeprecationWarning)
+    _warnings.warn(('torchutils.get_current_lr is deprecated. '
                     'This will be an error in future releases. '
                     'Please use torchutils.get_lr instead.'), DeprecationWarning)
     _validate_param(optimizer, 'optimizer', 'optimizer')
     return optimizer.param_groups[0]['lr']
 
 def set_current_lr(optimizer, lr):
-    warnings.simplefilter('always', DeprecationWarning)
-    warnings.warn(('torchutils.set_current_lr is deprecated. '
+    _warnings.simplefilter('always', DeprecationWarning)
+    _warnings.warn(('torchutils.set_current_lr is deprecated. '
                     'This will be an error in future releases. '
                     'Please use torchutils.set_lr instead.'), DeprecationWarning)
     _validate_param(optimizer, 'optimizer', 'optimizer')
