@@ -14,6 +14,14 @@ TorchUtils
 PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
 trivial but useful functionality so that you don't have to.
 
+Key Features
+------------
+
+* Save/load checkpoints.
+* Get/set learning rate.
+* Calculate total model parameters.
+* Set random seed.
+
 Requirements
 ------------
 
