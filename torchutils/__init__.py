@@ -6,6 +6,7 @@ from .utils import set_random_seed
 __all__ = [
     'load_checkpoint', 'save_checkpoint',
     'get_current_lr', 'set_current_lr',
+    'get_lr', 'set_lr',
     'get_model_param_count',
     'set_random_seed'
 ]
