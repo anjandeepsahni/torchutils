@@ -1,3 +1,4 @@
+import torch.nn as nn
 import torch.optim as optim
 
 def _validate_param(val, name, paramType):
