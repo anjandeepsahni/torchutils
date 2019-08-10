@@ -1,7 +1,7 @@
 import os
 import time
 import torch
-from _validate import _validate_param
+from ._validate import _validate_param
 
 class Checkpoint():
     def __init__(self, epoch, model_path, model, optimizer=None, scheduler=None):
@@ -32,7 +32,7 @@ class Checkpoint():
 
     @model_path.setter
     def model_path(self, val):
-        _validate_param(val, 'model_path, 'str')
+        _validate_param(val, 'model_path', 'str')
         self._model_path = val
 
     @property

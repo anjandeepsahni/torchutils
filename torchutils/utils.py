@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from _validate import _validate_param
+from ._validate import _validate_param
 
 def set_random_seed(seed):
     """

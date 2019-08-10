@@ -1,5 +1,5 @@
 import torch
-from _validate import _validate_param
+from ._validate import _validate_param
 
 def get_lr(optimizer):
     """
