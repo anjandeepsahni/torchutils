@@ -5,17 +5,23 @@ from ._validate import _validate_param
 
 __all__ = ['save_checkpoint', 'load_checkpoint']
 
+
 class _Checkpoint():
-    def __init__(self, epoch, model_path, model, optimizer=None, scheduler=None):
+    def __init__(self,
+                 epoch,
+                 model_path,
+                 model,
+                 optimizer=None,
+                 scheduler=None):
         self.epoch = epoch
         self.model_path = model_path
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self._state = {'epoch': None,
-                        'model': None,
-                        'optimizer': None,
-                        'scheduler': None}
+                       'model': None,
+                       'optimizer': None,
+                       'scheduler': None}
 
     @property
     def epoch(self):
@@ -24,7 +30,7 @@ class _Checkpoint():
     @epoch.setter
     def epoch(self, val):
         _validate_param(val, 'epoch', 'int')
-        if val<0:
+        if val < 0:
             raise ValueError('Epoch value must be positive, but got value: {}'.format(val))
         self._epoch = val
 
