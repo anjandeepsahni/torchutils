@@ -24,26 +24,20 @@ def get_model_param_count(model, param_type='total'):
     _validate_param(model, 'model', 'model')
     _validate_param(param_type, 'param_type', 'str')
 
-    param_count = 0
+    total_params = 0
+    train_params = 0
+
     for p in model.parameters():
-        if param_type == 'total':
-            val = p.size(0)
-            if len(p.size()) > 1:
-                val *= p.size(1)
-            param_count += val
+        val = p.size(0)
+        if len(p.size()) > 1:
+            val *= p.size(1)
+        train_params += val
+        if p.requires_grad:
+            train_params += val
 
-        elif param_type == 'train':
-            if p.requires_grad:
-                val = p.size(0)
-                if len(p.size()) > 1:
-                    val *= p.size(1)
-                param_count += val
-
-        else:
-            if not p.requires_grad:
-                val = p.size(0)
-                if len(p.size()) > 1:
-                    val *= p.size(1)
-                param_count += val
-
-        return param_count
+    if param_type == 'total':
+        return total_params
+    elif param_type == 'train':
+        return train_params
+    else:
+        return total_params - train_params
