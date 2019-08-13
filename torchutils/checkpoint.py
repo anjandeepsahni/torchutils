@@ -105,28 +105,21 @@ class _Checkpoint():
 
 def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None,
                     metric=0):
-    """
-    Save checkpoint.
+    """Save checkpoint.
 
-    Parameters
-    ----------
-    epoch : int
-        Epoch/iteration number.
-    model_path : str
-        Path for saving the model.
-    model : nn.Module
-        PyTorch model.
-    optimizer : optim.Optimizer, optional
-        PyTorch optimizer. (default: None)
-    scheduler : optim.lr_scheduler._LRScheduler, optional
-        PyTorch scheduler. (default: None)
-    metric : float, optional
-        Metric, for example, validation accuracy. (default: 0)
+    Args:
+        epoch (int): Epoch/iteration number.
+        model_path (str): Path for saving the model.
+        model (nn.Module): PyTorch model.
+        optimizer (optim.Optimizer): PyTorch optimizer. (default: None)
+        scheduler (optim.lr_scheduler._LRScheduler): PyTorch scheduler.
+            (default: None)
+        metric (float): Metric to add to checkpoint name, for example,
+            validation accuracy. (default: 0)
 
-    Returns
-    -------
-    None
-        Nothing.
+    Returns:
+        None: Returns nothing.
+
     """
 
     ckpt = _Checkpoint(epoch=epoch, model_path=model_path, model=model,
@@ -136,34 +129,26 @@ def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None,
 
 def load_checkpoint(model_path, ckpt_name, model, optimizer=None,
                     scheduler=None, device=None):
-    """
-    Load checkpoint.
+    """Load checkpoint.
 
-    Parameters
-    ----------
-    model_path : str
-        Path for loading the model.
-    ckpt_name : str
-        Checkpoint file name.
-    model : nn.Module
-        PyTorch model.
-    optimizer : optim.Optimizer, optional
-        PyTorch optimizer. (default: None)
-    scheduler : optim.lr_scheduler._LRScheduler, optional
-        PyTorch scheduler. (default: None)
-    device : str, optional
-        Device to map the checkpoint, "cpu" or "cuda". (default: None)
+    Args:
+        model_path (str): Path for loading the model.
+        ckpt_name (str): Checkpoint file name.
+        model (nn.Module): PyTorch model.
+        optimizer (optim.Optimizer): PyTorch optimizer. (default: None)
+        scheduler (optim.lr_scheduler._LRScheduler): PyTorch scheduler.
+            (default: None)
+        device (str): Device to map the checkpoint, "cpu" or "cuda".
+            (default: None)
 
-    Returns
-    -------
-    int
-        Start epoch/iteration number.
-    nn.Module
-        PyTorch model.
-    optim.Optimizer
-        PyTorch optimizer.
-    optim.lr_scheduler._LRScheduler
-        PyTorch scheduler.
+    Returns:
+        tuple: 4-element tuple containing:
+
+            - (*int*): Start epoch/iteration number.
+            - (*nn.Module*): PyTorch model.
+            - (*optim.Optimizer*): PyTorch optimizer.
+            - (*optim.lr_scheduler._LRScheduler*): PyTorch scheduler.
+
     """
 
     ckpt = _Checkpoint(epoch=0, model_path=model_path, model=model,

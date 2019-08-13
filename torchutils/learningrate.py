@@ -5,18 +5,14 @@ __all__ = ['get_lr', 'set_lr', 'get_current_lr', 'set_current_lr']
 
 
 def get_lr(optimizer):
-    """
-    Get learning rate.
+    """Get learning rate.
 
-    Parameters
-    ----------
-    optimizer : optim.Optimizer
-        PyTorch optimizer.
+    Args:
+        optimizer (optim.Optimizer): PyTorch optimizer.
 
-    Returns
-    -------
-    float
-        Learning rate of the optimizer.
+    Returns:
+        float: Learning rate of the optimizer.
+
     """
 
     _validate_param(optimizer, 'optimizer', 'optimizer')
@@ -24,21 +20,17 @@ def get_lr(optimizer):
 
 
 def set_lr(optimizer, lr):
-    """
-    Set learning rate.
+    """Set learning rate.
 
-    Parameters
-    ----------
-    optimizer : optim.Optimizer
-        PyTorch optimizer.
-    lr : float
-        New learning rate value.
+    Args:
+        optimizer (optim.Optimizer): PyTorch optimizer.
+        lr (float): New learning rate value.
 
-    Returns
-    -------
-    optim.Optimizer
-        PyTorch optimizer.
+    Returns:
+        optim.Optimizer: PyTorch optimizer.
+
     """
+
     _validate_param(optimizer, 'optimizer', 'optimizer')
     _validate_param(lr, 'lr', 'float')
     return set_current_lr(optimizer, lr)

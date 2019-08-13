@@ -1,11 +1,14 @@
 import setuptools
 
-with open("README.md") as fh:
-    long_description = fh.read()
+with open("README.md") as fp:
+    long_description = fp.read()
+
+with open("torchutils/_version.py") as fp:
+    torchutils_version = fp.read().strip().split('__version__ = ')[1][1:-1]
 
 setuptools.setup(
      name='torchutils',
-     version='0.0.1',
+     version=torchutils_version,
      author="Anjandeep Singh Sahni",
      author_email="sahni.anjandeep@gmail.com",
      description="PyTorch utility functions.",
