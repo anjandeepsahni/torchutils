@@ -2,19 +2,16 @@ from ._validate import _validate_param
 
 __all__ = ['get_model_param_count']
 
+
 def get_model_param_count(model):
-    """
-    Count total parameters in the PyTorch model.
+    """Count total parameters in the PyTorch model.
 
-    Parameters
-    ----------
-    model : nn.Module
-        PyTorch model.
+    Args:
+        model (nn.Module): PyTorch model.
 
-    Returns
-    -------
-    int
-        Number of parameters in the model.
+    Returns:
+        int: Number of parameters in the model.
+
     """
 
     _validate_param(model, 'model', 'model')

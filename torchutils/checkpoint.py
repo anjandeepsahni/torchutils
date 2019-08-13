@@ -5,17 +5,19 @@ from ._validate import _validate_param
 
 __all__ = ['save_checkpoint', 'load_checkpoint']
 
+
 class _Checkpoint():
-    def __init__(self, epoch, model_path, model, optimizer=None, scheduler=None):
+    def __init__(self, epoch, model_path, model, optimizer=None,
+                 scheduler=None):
         self.epoch = epoch
         self.model_path = model_path
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
         self._state = {'epoch': None,
-                        'model': None,
-                        'optimizer': None,
-                        'scheduler': None}
+                       'model': None,
+                       'optimizer': None,
+                       'scheduler': None}
 
     @property
     def epoch(self):
@@ -24,8 +26,9 @@ class _Checkpoint():
     @epoch.setter
     def epoch(self, val):
         _validate_param(val, 'epoch', 'int')
-        if val<0:
-            raise ValueError('Epoch value must be positive, but got value: {}'.format(val))
+        if val < 0:
+            raise ValueError('Epoch value must be positive, '
+                             'but got value: {}'.format(val))
         self._epoch = val
 
     @property
@@ -66,21 +69,26 @@ class _Checkpoint():
 
     def save(self, metric=0):
         self._state['epoch'] = self.epoch
-        if self.model: self._state['model'] = self.model.state_dict()
-        if self.optimizer: self._state['optimizer'] = self.optimizer.state_dict()
-        if self.scheduler: self._state['scheduler'] = self.scheduler.state_dict()
-        metric_str = '%.4f'%(metric)
+        if self.model:
+            self._state['model'] = self.model.state_dict()
+        if self.optimizer:
+            self._state['optimizer'] = self.optimizer.state_dict()
+        if self.scheduler:
+            self._state['scheduler'] = self.scheduler.state_dict()
+        metric_str = '%.4f' % (metric)
         if not _os.path.exists(self.model_path):
             _os.makedirs(self.model_path)
         model_path = _os.path.join(self.model_path,
-                    'model_{}_e{}_{}.pt'.format(_time.strftime("%Y%m%d-%H%M%S"), \
-                    (str(self.epoch)), metric_str))
+                                   'model_{}_e{}_{}.pt'.format(
+                                    _time.strftime("%Y%m%d-%H%M%S"),
+                                    (str(self.epoch)), metric_str))
         _torch.save(self._state, model_path)
 
     def load(self, ckpt, device=None):
         ckpt_path = _os.path.join(self.model_path, ckpt)
         if not _os.path.exists(ckpt_path):
-            raise ValueError('Checkpoint file does not exist: {}'.format(ckpt_path))
+            raise ValueError('Checkpoint file does not exist: {}'.format(
+                             ckpt_path))
         if device:
             ckpt_dict = _torch.load(ckpt_path, map_location=device)
         else:
@@ -94,64 +102,55 @@ class _Checkpoint():
             self.scheduler.load_state_dict(ckpt_dict['scheduler'])
         return start_epoch, self.model, self.optimizer, self.scheduler
 
-def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None, metric=0):
-    """
-    Save checkpoint.
 
-    Parameters
-    ----------
-    epoch : int
-        Epoch/iteration number.
-    model_path : str
-        Path for saving the model.
-    model : nn.Module
-        PyTorch model.
-    optimizer : optim.Optimizer, optional
-        PyTorch optimizer. (default: None)
-    scheduler : optim.lr_scheduler._LRScheduler, optional
-        PyTorch scheduler. (default: None)
-    metric : float, optional
-        Metric, for example, validation accuracy. (default: 0)
+def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None,
+                    metric=0):
+    """Save checkpoint.
 
-    Returns
-    -------
-    None
-        Nothing.
+    Args:
+        epoch (int): Epoch/iteration number.
+        model_path (str): Path for saving the model.
+        model (nn.Module): PyTorch model.
+        optimizer (optim.Optimizer): PyTorch optimizer. (default: None)
+        scheduler (optim.lr_scheduler._LRScheduler): PyTorch scheduler.
+            (default: None)
+        metric (float): Metric to add to checkpoint name, for example,
+            validation accuracy. (default: 0)
+
+    Returns:
+        None: Returns nothing.
+
     """
 
-    ckpt = _Checkpoint(epoch=epoch, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
+    ckpt = _Checkpoint(epoch=epoch, model_path=model_path, model=model,
+                       optimizer=optimizer, scheduler=scheduler)
     ckpt.save(metric=metric)
 
-def load_checkpoint(model_path, ckpt_name, model, optimizer=None, scheduler=None, device=None):
-    """
-    Load checkpoint.
 
-    Parameters
-    ----------
-    model_path : str
-        Path for loading the model.
-    ckpt_name : str
-        Checkpoint file name.
-    model : nn.Module
-        PyTorch model.
-    optimizer : optim.Optimizer, optional
-        PyTorch optimizer. (default: None)
-    scheduler : optim.lr_scheduler._LRScheduler, optional
-        PyTorch scheduler. (default: None)
-    device : str, optional
-        Device to map the checkpoint, "cpu" or "cuda". (default: None)
+def load_checkpoint(model_path, ckpt_name, model, optimizer=None,
+                    scheduler=None, device=None):
+    """Load checkpoint.
 
-    Returns
-    -------
-    int
-        Start epoch/iteration number.
-    nn.Module
-        PyTorch model.
-    optim.Optimizer
-        PyTorch optimizer.
-    optim.lr_scheduler._LRScheduler
-        PyTorch scheduler.
+    Args:
+        model_path (str): Path for loading the model.
+        ckpt_name (str): Checkpoint file name.
+        model (nn.Module): PyTorch model.
+        optimizer (optim.Optimizer): PyTorch optimizer. (default: None)
+        scheduler (optim.lr_scheduler._LRScheduler): PyTorch scheduler.
+            (default: None)
+        device (str): Device to map the checkpoint, "cpu" or "cuda".
+            (default: None)
+
+    Returns:
+        tuple: 4-element tuple containing:
+
+            - (*int*): Start epoch/iteration number.
+            - (*nn.Module*): PyTorch model.
+            - (*optim.Optimizer*): PyTorch optimizer.
+            - (*optim.lr_scheduler._LRScheduler*): PyTorch scheduler.
+
     """
 
-    ckpt = _Checkpoint(epoch=0, model_path=model_path, model=model, optimizer=optimizer,scheduler=scheduler)
+    ckpt = _Checkpoint(epoch=0, model_path=model_path, model=model,
+                       optimizer=optimizer, scheduler=scheduler)
     return ckpt.load(ckpt_name, device)

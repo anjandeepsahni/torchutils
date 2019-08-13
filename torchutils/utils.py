@@ -4,19 +4,16 @@ from ._validate import _validate_param
 
 __all__ = ['set_random_seed']
 
+
 def set_random_seed(seed):
-    """
-    Set random seed for numpy, torch and torch.cuda.
+    """Set random seed for numpy, torch and torch.cuda.
 
-    Parameters
-    ----------
-    seed : int
-        Seed value.
+    Args:
+        seed (int): Seed value.
 
-    Returns
-    -------
-    None
-        Nothing.
+    Returns:
+        None: Returns nothing.
+
     """
 
     _validate_param(seed, 'seed', 'int')
