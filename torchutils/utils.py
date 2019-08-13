@@ -4,6 +4,7 @@ from ._validate import _validate_param
 
 __all__ = ['set_random_seed']
 
+
 def set_random_seed(seed):
     """
     Set random seed for numpy, torch and torch.cuda.
