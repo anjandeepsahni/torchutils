@@ -1,6 +1,6 @@
 from ._validate import _validate_param
 
-__all__ = ['get_model_param_count', 'get_trainable_param_count']
+__all__ = ['get_model_param_count', 'get_train_param_count']
 
 
 def get_model_param_count(model):
@@ -26,9 +26,9 @@ def get_model_param_count(model):
     return param_count
 
 
-def get_trainable_param_count(model):
+def get_train_param_count(model):
     """
-    Count total trainable parameters in the PyTorch model.
+    Count trainable parameters in the PyTorch model.
     Parameters
     ----------
     model : nn.Module
