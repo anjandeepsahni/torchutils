@@ -21,6 +21,8 @@ Key Features
 * Get/set learning rate.
 * Calculate total model parameters.
 * Set random seed.
+* Print model summary in Keras style.
+* Calculate model FLOPs.
 
 Requirements
 ------------
