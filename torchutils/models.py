@@ -4,15 +4,14 @@ from ._flops import _compute_flops
 from ._validate import _validate_param
 from collections import OrderedDict as _OrderedDict
 
-
 __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 
 class _ModelSummary():
     def __init__(self, model, input_size, batch_size=-1, device='cpu',
                  input_type='float32'):
-        assert(device.lower() in {'cuda', 'cpu'})
-        assert(not ((device.lower() == "cuda") ^ _torch.cuda.is_available()))
+        assert (device.lower() in {'cuda', 'cpu'})
+        assert (not ((device.lower() == "cuda") ^ _torch.cuda.is_available()))
         self.model = model
         if -1 < int(batch_size) <= 0:
             batch_size = -1
@@ -60,11 +59,12 @@ class _ModelSummary():
         m_key = "%s-%i" % (class_name, module_idx + 1)
         self.summary[m_key] = _OrderedDict()
         if isinstance(out, (list, tuple)):
-            self.summary[m_key]["out_shape"] = [[self.batch_size] + list(
-                                                o.size())[1:] for o in out]
+            self.summary[m_key]["out_shape"] = [[self.batch_size] +
+                                                list(o.size())[1:]
+                                                for o in out]
         else:
             self.summary[m_key]["out_shape"] = [self.batch_size] + list(
-                                                out.size())[1:]
+                out.size())[1:]
 
         # compute module parameters
         params = 0
@@ -86,19 +86,17 @@ class _ModelSummary():
     def show(self):
         print("----------------------------------------"
               "---------------------------------------")
-        line = "{:>20}  {:>25} {:>15} {:>15}".format(
-                "Layer", "Output", "Params", "FLOPs")
+        line = "{:>20}  {:>25} {:>15} {:>15}".format("Layer", "Output",
+                                                     "Params", "FLOPs")
         print(line)
         print("========================================"
               "=======================================")
         total_params, total_output, trainable_params, total_flops = 0, 0, 0, 0
         for layer in self.summary:
             line = "{:>20}  {:>25} {:>15} {:>15}".format(
-                layer,
-                str(self.summary[layer]["out_shape"]),
+                layer, str(self.summary[layer]["out_shape"]),
                 "{0:,}".format(self.summary[layer]["params"]),
-                "{0:,}".format(self.summary[layer]["flops"])
-            )
+                "{0:,}".format(self.summary[layer]["flops"]))
             total_params += self.summary[layer]["params"]
             total_output += _np.prod(self.summary[layer]["out_shape"])
             total_flops += self.summary[layer]["flops"]
@@ -109,12 +107,12 @@ class _ModelSummary():
 
         # calculate total values
         ib = self.input_bytes
-        total_input_size = abs(sum([_np.prod(input_item)
-                                    for input_item in self.input_size]) *
-                               self.batch_size * ib / (1024 ** 2.))
+        total_input_size = abs(
+            sum([_np.prod(input_item) for input_item in self.input_size]) *
+            self.batch_size * ib / (1024**2.))
         # x2 output size for gradients
-        total_output_size = abs(2. * total_output * ib / (1024 ** 2.))
-        total_params_size = abs(total_params * ib / (1024 ** 2.))
+        total_output_size = abs(2. * total_output * ib / (1024**2.))
+        total_params_size = abs(total_params * ib / (1024**2.))
         total_size = total_params_size + total_output_size + total_input_size
         total_flops_size = abs(total_flops / (1e9))
 
@@ -124,8 +122,8 @@ class _ModelSummary():
         print("Trainable params: {0:,}".format(trainable_params))
         print("Non-trainable params: {0:,}".format(total_params -
                                                    trainable_params))
-        print("Total FLOPs: {0:,} / {1:.2f} GFLOPs".format(total_flops,
-                                                           total_flops_size))
+        print("Total FLOPs: {0:,} / {1:.2f} GFLOPs".format(
+            total_flops, total_flops_size))
         print("----------------------------------------"
               "---------------------------------------")
         print("Input size (MB): %0.2f" % total_input_size)
@@ -156,7 +154,7 @@ def get_model_summary(model, input_size, batch_size=-1, device='cpu'):
     _validate_param(input_size, 'input_size', ['tuple', 'list'])
     _validate_param(batch_size, 'batch_size', 'int')
     _validate_param(device, 'device', 'str')
-    assert(device.lower() in {'cpu', 'cuda'})
+    assert (device.lower() in {'cpu', 'cuda'})
     summary = _ModelSummary(model, input_size, batch_size, device.lower())
     summary.show()
 
@@ -182,8 +180,8 @@ def get_model_flops(model, input_size, device='cpu', unit='FLOP'):
     _validate_param(input_size, 'input_size', ['tuple', 'list'])
     _validate_param(device, 'device', 'str')
     _validate_param(unit, 'unit', 'str')
-    assert(device.lower() in {'cpu', 'cuda'})
-    assert(unit in {'GFLOP', 'MFLOP', 'FLOP'})
+    assert (device.lower() in {'cpu', 'cuda'})
+    assert (unit in {'GFLOP', 'MFLOP', 'FLOP'})
     summary = _ModelSummary(model, input_size, device=device.lower())
     flops = summary.total_model_flops
     if unit == 'GFLOP':

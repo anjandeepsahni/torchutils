@@ -35,6 +35,7 @@ def set_lr(optimizer, lr):
     _validate_param(lr, 'lr', 'float')
     return set_current_lr(optimizer, lr)
 
+
 ########################################################################
 #                    BACKWARD COMPATIBILITY SECTION                    #
 ########################################################################

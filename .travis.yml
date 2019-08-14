@@ -4,11 +4,15 @@ language: python
 
 python:
     - "3.6"
+    - "3.7"
 
 install:            # Install requirement as "Environment Setup Section"
-    - pip install -r docs/requirements.txt
+    - pip install -r requirements.txt
 
 script:             # build sphinx document
+    - flake8
+    - isort -rc --check-only --diff torchutils/
+    - yapf -r -d --style .style.yapf torchutils/
     - cd docs/
     - make html
 

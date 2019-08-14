@@ -11,9 +11,11 @@ def _validate_param(val, name, param_type):
         'tuple': tuple,
         'model': _nn.Module,
         'optimizer': _optim.Optimizer,
-        'scheduler': [_optim.lr_scheduler._LRScheduler,
-                      _optim.lr_scheduler.ReduceLROnPlateau]
-        }
+        'scheduler': [
+            _optim.lr_scheduler._LRScheduler,
+            _optim.lr_scheduler.ReduceLROnPlateau
+        ]
+    }
     if not isinstance(param_type, list):
         param_type = [param_type]
     for pt in param_type:
@@ -29,4 +31,4 @@ def _validate_param(val, name, param_type):
                 return
     type_str = str(cur_type[0])
     raise TypeError('{} must be of type {}, but got {}.'.format(
-                    name, type_str, type(val)))
+        name, type_str, type(val)))

@@ -29,7 +29,7 @@ def _relu_flops(module, inp, out):
 def _softmax_flops(module, inp, out):
     batch_size, nfeatures = inp.size()
     # exp: nfeatures, add: nfeatures-1, div: nfeatures
-    total_ops = batch_size * (3*nfeatures - 1)
+    total_ops = batch_size * (3 * nfeatures - 1)
     return total_ops
 
 
@@ -63,9 +63,9 @@ def _upsample_flops(module, inp, out):
     elif module.mode == "nearest":
         factor = _zero_flops(module, inp, out)
     elif module.mode == "linear":
-        factor = 5     # 2 muls + 3 add
+        factor = 5  # 2 muls + 3 add
     elif module.mode == "bilinear":
-        factor = 13     # 6 muls + 7 adds
+        factor = 13  # 6 muls + 7 adds
     elif module.mode == "bicubic":
         # Product matrix [4x4] x [4x4] x [4x4]
         # 224 = 128 muls + 96 adds, 35 # 16 muls + 12 adds + 4 muls + 3 adds
@@ -85,32 +85,26 @@ def _compute_flops(module, inp, out):
         _nn.ConvTranspose1d: _convNd_flops,
         _nn.ConvTranspose2d: _convNd_flops,
         _nn.ConvTranspose3d: _convNd_flops,
-
         _nn.BatchNorm1d: _bn_flops,
         _nn.BatchNorm2d: _bn_flops,
         _nn.BatchNorm3d: _bn_flops,
-
         _nn.ReLU: _zero_flops,
         _nn.ReLU6: _zero_flops,
         _nn.LeakyReLU: _relu_flops,
-
         _nn.MaxPool1d: _zero_flops,
         _nn.MaxPool2d: _zero_flops,
         _nn.MaxPool3d: _zero_flops,
         _nn.AdaptiveMaxPool1d: _zero_flops,
         _nn.AdaptiveMaxPool2d: _zero_flops,
         _nn.AdaptiveMaxPool3d: _zero_flops,
-
         _nn.AvgPool1d: _avgpool_flops,
         _nn.AvgPool2d: _avgpool_flops,
         _nn.AvgPool3d: _avgpool_flops,
         _nn.AdaptiveAvgPool1d: _adap_avgpool_flops,
         _nn.AdaptiveAvgPool2d: _adap_avgpool_flops,
         _nn.AdaptiveAvgPool3d: _adap_avgpool_flops,
-
         _nn.Linear: _linear_flops,
         _nn.Dropout: _zero_flops,
-
         _nn.Upsample: _upsample_flops,
         _nn.UpsamplingBilinear2d: _upsample_flops,
         _nn.UpsamplingNearest2d: _upsample_flops

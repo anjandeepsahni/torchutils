@@ -14,10 +14,12 @@ class _Checkpoint():
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
-        self._state = {'epoch': None,
-                       'model': None,
-                       'optimizer': None,
-                       'scheduler': None}
+        self._state = {
+            'epoch': None,
+            'model': None,
+            'optimizer': None,
+            'scheduler': None
+        }
 
     @property
     def epoch(self):
@@ -78,17 +80,17 @@ class _Checkpoint():
         metric_str = '%.4f' % (metric)
         if not _os.path.exists(self.model_path):
             _os.makedirs(self.model_path)
-        model_path = _os.path.join(self.model_path,
-                                   'model_{}_e{}_{}.pt'.format(
-                                    _time.strftime("%Y%m%d-%H%M%S"),
-                                    (str(self.epoch)), metric_str))
+        model_path = _os.path.join(
+            self.model_path, 'model_{}_e{}_{}.pt'.format(
+                _time.strftime("%Y%m%d-%H%M%S"), (str(self.epoch)),
+                metric_str))
         _torch.save(self._state, model_path)
 
     def load(self, ckpt, device=None):
         ckpt_path = _os.path.join(self.model_path, ckpt)
         if not _os.path.exists(ckpt_path):
-            raise ValueError('Checkpoint file does not exist: {}'.format(
-                             ckpt_path))
+            raise ValueError(
+                'Checkpoint file does not exist: {}'.format(ckpt_path))
         if device:
             ckpt_dict = _torch.load(ckpt_path, map_location=device)
         else:
