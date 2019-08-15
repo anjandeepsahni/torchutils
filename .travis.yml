@@ -16,8 +16,18 @@ script:             # build sphinx document
     - cd docs/
     - make html
 
-deploy:              # deploy to github page
-    provider: pages
-    skip_cleanup: true
-    local_dir: docs/_build/html
-    github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+stages:
+    - test
+    - deploy
+
+jobs:
+    include:
+        - stage: deploy
+          python: "3.6"
+          install: skip      # no tests, no depedencies needed
+          script: skip      # we're not running tests
+          deploy:
+              provider: pages   # deploy to github page
+              skip_cleanup: true
+              local_dir: docs/_build/html
+              github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
