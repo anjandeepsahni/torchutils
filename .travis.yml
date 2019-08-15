@@ -13,8 +13,6 @@ script:             # build sphinx document
     - flake8
     - isort -rc --check-only --diff torchutils/
     - yapf -r -d --style .style.yapf torchutils/
-    - cd docs/
-    - make html
 
 stages:
     - test
@@ -24,8 +22,11 @@ jobs:
     include:
         - stage: deploy
           python: "3.6"
-          install: skip         # no tests, deploy will only run after test
-          script: skip          # we're not running tests
+          install:
+              - pip install -r requirements.txt
+          script:
+              - cd docs/
+              - make html
           deploy:
               provider: pages   # deploy to github page
               skip_cleanup: true
