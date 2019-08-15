@@ -174,7 +174,6 @@ def load_checkpoint(model_path, ckpt_name, model, optimizer=None,
         optimizer = optim.Adam(model.parameters())
         scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
 
-        # change optimizer lr, just for load_checkpoint test
         print('Original learning rate:', tu.get_lr(optimizer))
 
         # load checkpoint model_20190814-212442_e0_0.7531.pt
