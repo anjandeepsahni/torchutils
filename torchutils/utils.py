@@ -14,6 +14,12 @@ def set_random_seed(seed):
     Returns:
         None: Returns nothing.
 
+    Example::
+
+        import torchutils as tu
+
+        tu.set_random_seed(2222)
+
     """
 
     _validate_param(seed, 'seed', 'int')

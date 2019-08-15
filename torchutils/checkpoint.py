@@ -102,7 +102,7 @@ class _Checkpoint():
             self.optimizer.load_state_dict(ckpt_dict['optimizer'])
         if self.scheduler and ckpt_dict['scheduler']:
             self.scheduler.load_state_dict(ckpt_dict['scheduler'])
-        return start_epoch, self.model, self.optimizer, self.scheduler
+        return start_epoch
 
 
 def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None,
@@ -121,6 +121,24 @@ def save_checkpoint(epoch, model_path, model, optimizer=None, scheduler=None,
 
     Returns:
         None: Returns nothing.
+
+    Example::
+
+        import torchvision
+        import torchutils as tu
+        import torch.optim as optim
+
+        model = torchvision.models.alexnet()
+        optimizer = optim.Adam(model.parameters())
+        scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
+
+        # change optimizer lr, just for load_checkpoint test
+        optimizer = tu.set_lr(optimizer, 0.1234)
+
+        # checkpoint saved as model_20190814-212442_e0_0.7531.pt
+        tu.save_checkpoint(epoch=0, model_path='.', model=model,
+                           optimizer=optimizer, scheduler=scheduler,
+                           metric=0.7531)
 
     """
 
@@ -144,12 +162,35 @@ def load_checkpoint(model_path, ckpt_name, model, optimizer=None,
             (default: None)
 
     Returns:
-        tuple: 4-element tuple containing:
+        int: Start epoch/iteration number to continue training.
 
-            - (*int*): Start epoch/iteration number.
-            - (*nn.Module*): PyTorch model.
-            - (*optim.Optimizer*): PyTorch optimizer.
-            - (*optim.lr_scheduler._LRScheduler*): PyTorch scheduler.
+    Example::
+
+        import torchvision
+        import torchutils as tu
+        import torch.optim as optim
+
+        model = torchvision.models.alexnet()
+        optimizer = optim.Adam(model.parameters())
+        scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
+
+        # change optimizer lr, just for load_checkpoint test
+        print('Original learning rate:', tu.get_lr(optimizer))
+
+        # load checkpoint model_20190814-212442_e0_0.7531.pt
+        start_epoch = tu.load_checkpoint(model_path='.',
+                               ckpt_name='model_20190814-212442_e0_0.7531.pt',
+                               model=model, optimizer=optimizer,
+                               scheduler=scheduler)
+
+        print('Checkpoint learning rate:', tu.get_lr(optimizer))
+        print('Start from epoch:', start_epoch)
+
+    Out::
+
+        Original learning rate: 0.001
+        Checkpoint learning rate: 0.1234
+        Start from epoch: 1
 
     """
 

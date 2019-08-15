@@ -148,6 +148,51 @@ def get_model_summary(model, input_size, batch_size=-1, device='cpu'):
     Returns:
         None: Returns nothing.
 
+    Example::
+
+        import torchvision
+        import torchutils as tu
+
+        model = torchvision.models.alexnet()
+        tu.get_model_summary(model, (3, 224, 224))
+
+    Out::
+
+        -----------------------------------------------------------------------
+                  Layer                  Output          Params           FLOPs
+        =======================================================================
+               Conv2d-1        [-1, 64, 55, 55]          23,296      70,470,400
+                 ReLU-2        [-1, 64, 55, 55]               0               0
+            MaxPool2d-3        [-1, 64, 27, 27]               0               0
+               Conv2d-4       [-1, 192, 27, 27]         307,392     224,088,768
+                 ReLU-5       [-1, 192, 27, 27]               0               0
+            MaxPool2d-6       [-1, 192, 13, 13]               0               0
+               Conv2d-7       [-1, 384, 13, 13]         663,936     112,205,184
+                 ReLU-8       [-1, 384, 13, 13]               0               0
+               Conv2d-9       [-1, 256, 13, 13]         884,992     149,563,648
+                ReLU-10       [-1, 256, 13, 13]               0               0
+              Conv2d-11       [-1, 256, 13, 13]         590,080      99,723,520
+                ReLU-12       [-1, 256, 13, 13]               0               0
+           MaxPool2d-13         [-1, 256, 6, 6]               0               0
+             Dropout-14              [-1, 9216]               0               0
+              Linear-15              [-1, 4096]      37,752,832      75,493,376
+                ReLU-16              [-1, 4096]               0               0
+             Dropout-17              [-1, 4096]               0               0
+              Linear-18              [-1, 4096]      16,781,312      33,550,336
+                ReLU-19              [-1, 4096]               0               0
+              Linear-20              [-1, 1000]       4,097,000       8,191,000
+        =======================================================================
+        Total params: 61,100,840
+        Trainable params: 61,100,840
+        Non-trainable params: 0
+        Total FLOPs: 773,286,232 / 0.77 GFLOPs
+        -----------------------------------------------------------------------
+        Input size (MB): 0.57
+        Forward/backward pass size (MB): 8.31
+        Params size (MB): 233.08
+        Estimated Total Size (MB): 241.96
+        -----------------------------------------------------------------------
+
     """
 
     _validate_param(model, 'model', 'model')
@@ -173,6 +218,19 @@ def get_model_flops(model, input_size, device='cpu', unit='FLOP'):
 
     Returns:
         float: Number of FLOPs.
+
+    Example::
+
+        import torchvision
+        import torchutils as tu
+
+        model = torchvision.models.alexnet()
+        total_flops = tu.get_model_flops(model, (3, 224, 224), unit='GFLOP')
+        print('Total model FLOPs: {:,} GFLOPs'.format(total_flops))
+
+    Out::
+
+        Total model FLOPs: 0.77 GFLOPs
 
     """
 
@@ -200,13 +258,23 @@ def get_model_param_count(model):
     Returns:
         int: Number of parameters in the model.
 
+    Example::
+
+        import torchvision
+        import torchutils as tu
+
+        model = torchvision.models.alexnet()
+        total_params = tu.get_model_param_count(model)
+        print('Total model params: {:,}'.format(total_params))
+
+    Out::
+
+        Total model params: 61,100,840
+
     """
 
     _validate_param(model, 'model', 'model')
     param_count = 0
     for p in model.parameters():
-        val = p.size(0)
-        if len(p.size()) > 1:
-            val *= p.size(1)
-        param_count += val
+        param_count += p.numel()
     return param_count
