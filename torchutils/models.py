@@ -1,13 +1,16 @@
+from collections import OrderedDict as _OrderedDict
+
 import numpy as _np
 import torch as _torch
+
 from ._flops import _compute_flops
 from ._validate import _validate_param
-from collections import OrderedDict as _OrderedDict
 
 __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 
 class _ModelSummary():
+
     def __init__(self, model, input_size, batch_size=-1, device='cpu',
                  input_type='float32'):
         assert (device.lower() in {'cuda', 'cpu'})

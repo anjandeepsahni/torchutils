@@ -1,12 +1,15 @@
 import os as _os
 import time as _time
+
 import torch as _torch
+
 from ._validate import _validate_param
 
 __all__ = ['save_checkpoint', 'load_checkpoint']
 
 
 class _Checkpoint():
+
     def __init__(self, epoch, model_path, model, optimizer=None,
                  scheduler=None):
         self.epoch = epoch

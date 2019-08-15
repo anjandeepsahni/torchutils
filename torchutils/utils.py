@@ -1,5 +1,6 @@
-import torch as _torch
 import numpy as _np
+import torch as _torch
+
 from ._validate import _validate_param
 
 __all__ = ['set_random_seed']
