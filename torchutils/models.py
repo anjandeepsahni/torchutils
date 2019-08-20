@@ -257,6 +257,8 @@ def get_model_param_count(model, trainable=None):
 
     Args:
         model (nn.Module): PyTorch model.
+        trainable (None or bool): Pass ``None``: total, ``True``: trainable,
+            or ``False``: non-trainable parameters.
 
     Returns:
         int: Number of parameters in the model.
