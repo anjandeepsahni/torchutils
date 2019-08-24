@@ -10,7 +10,6 @@ __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 
 class _ModelSummary():
-
     def __init__(self, model, x, compact=False, *args, **kwargs):
         # prepare module names
         self.module_names = {}
@@ -114,11 +113,11 @@ class _ModelSummary():
         for layer in self.summary:
             max_layer = max(max_layer, len(layer))
             max_out = max(max_out, len(str(self.summary[layer]["out"])))
-            max_params = max(max_params, len("{0:,}".format(
-                self.summary[layer]["params"])))
+            max_params = max(
+                max_params, len("{0:,}".format(self.summary[layer]["params"])))
             max_ksize = max(max_ksize, len(str(self.summary[layer]["ksize"])))
-            max_flops = max(max_flops, len("{0:,}".format(
-                self.summary[layer]["flops"])))
+            max_flops = max(max_flops,
+                            len("{0:,}".format(self.summary[layer]["flops"])))
             total_params += self.summary[layer]["params"]
             total_output += _np.prod(self.summary[layer]["out"])
             total_flops += int(self.summary[layer]["flops"])
@@ -143,10 +142,10 @@ class _ModelSummary():
 
         # calculate total line length
         total_line_len = max_layer + max_out
-        total_line_len += 3   # adjust for spaces
+        total_line_len += 3  # adjust for spaces
         if not self.compact:
             total_line_len += max_params + max_ksize + max_flops
-            total_line_len += 3*3   # adjust for spaces
+            total_line_len += 3 * 3  # adjust for spaces
 
         # prepare summary lines
         _lines = {}
@@ -156,8 +155,7 @@ class _ModelSummary():
             total_params - trainable_params)
         _lines['flops'] = "Total FLOPs: {:,} / {:.2f} {}".format(
             total_flops, total_flops_size, tfs_str)
-        _lines['inp_size'] = "Input size (MB): {:.2f}".format(
-            total_input_size)
+        _lines['inp_size'] = "Input size (MB): {:.2f}".format(total_input_size)
         _lines['pass_size'] = "Forward/backward pass size (MB): {:.2f}".format(
             total_output_size)
         _lines['param_size'] = "Params size (MB): {:.2f}".format(
@@ -168,15 +166,17 @@ class _ModelSummary():
         for k, v in _lines.items():
             total_line_len = max(total_line_len, len(v))
 
-        _lines['-'] = "-"*total_line_len
-        _lines['='] = "="*total_line_len
+        _lines['-'] = "-" * total_line_len
+        _lines['='] = "=" * total_line_len
 
         # print summary
         print(_lines['='])
         if self.compact:
             header = "{:<{ml}}   {:>{mo}}".format(
-                "Layer", "Output", ml=max_layer,
-                mo=max(max_out, total_line_len-max_layer-3))
+                "Layer",
+                "Output",
+                ml=max_layer,
+                mo=max(max_out, total_line_len - max_layer - 3))
         else:
             header = "{:<{ml}}   {:^{mk}}   {:^{mo}}" \
                      "   {:^{mp}}   {:>{mf}}".format(
@@ -188,8 +188,10 @@ class _ModelSummary():
         for layer in self.summary:
             if self.compact:
                 line = "{:<{ml}}   {:>{mo}}".format(
-                        layer, str(self.summary[layer]["out"]), ml=max_layer,
-                        mo=max(max_out, total_line_len-max_layer-3))
+                    layer,
+                    str(self.summary[layer]["out"]),
+                    ml=max_layer,
+                    mo=max(max_out, total_line_len - max_layer - 3))
             else:
                 line = "{:<{ml}}   {:>{mk}}   {:>{mo}}" \
                        "   {:>{mp}}   {:>{mf}}".format(
