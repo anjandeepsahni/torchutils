@@ -11,6 +11,7 @@ def _validate_param(val, name, param_type):
         'bool': bool,
         'float': float,
         'tuple': tuple,
+        'none': type(None),
         'model': _nn.Module,
         'tensor': _torch.Tensor,
         'optimizer': _optim.Optimizer,

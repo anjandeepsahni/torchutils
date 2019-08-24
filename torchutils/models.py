@@ -321,11 +321,13 @@ def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
     return round(flops, 2)
 
 
-def get_model_param_count(model):
+def get_model_param_count(model, trainable=None):
     """Count total parameters in the PyTorch model.
 
     Args:
         model (nn.Module): PyTorch model.
+        trainable (None or bool): Pass ``None``: total, ``True``: trainable,
+            or ``False``: non-trainable parameters.
 
     Returns:
         int: Number of parameters in the model.
@@ -346,7 +348,19 @@ def get_model_param_count(model):
     """
 
     _validate_param(model, 'model', 'model')
-    param_count = 0
+    _validate_param(trainable, 'trainable', ['bool', 'none'])
+
+    total_params = 0
+    train_params = 0
+
     for p in model.parameters():
-        param_count += p.numel()
-    return param_count
+        total_params += p.numel()
+        if p.requires_grad:
+            train_params += p.numel()
+
+    if trainable is None:
+        return total_params
+    elif trainable:
+        return train_params
+    else:
+        return total_params - train_params
