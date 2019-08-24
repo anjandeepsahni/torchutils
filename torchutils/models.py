@@ -11,142 +11,215 @@ __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 class _ModelSummary():
 
-    def __init__(self, model, input_size, batch_size=-1, device='cpu',
-                 input_type='float32'):
-        assert (device.lower() in {'cuda', 'cpu'})
-        assert (not ((device.lower() == "cuda") ^ _torch.cuda.is_available()))
-        self.model = model
-        if -1 < int(batch_size) <= 0:
-            batch_size = -1
-        else:
-            batch_size = max(int(batch_size), -1)
-        self.batch_size = batch_size
-
-        # multiple inputs to the network
-        if isinstance(input_size, tuple):
-            input_size = [input_size]
-        self.input_size = input_size
-
-        valid_input_types = {'float32': 4., 'float16': 2., 'float8': 1.}
-        self.input_bytes = valid_input_types[input_type]
-
-        # dummy batch_size of 2 for batchnorm
-        inp = [_torch.rand(2, *in_size).to(device) for in_size in input_size]
-        self.model = self.model.to(device)
+    def __init__(self, model, x, compact=False, *args, **kwargs):
+        # prepare module names
+        self.module_names = {}
+        self.prep_names_dict(model)
 
         # create properties
         self.summary = _OrderedDict()
         self.total_model_flops = 0
         self.hooks = []
+        self.x = x
+        self.compact = compact
 
         # register hook
-        self.model.apply(self.register_hook)
+        model.apply(self.register_hook)
 
         # make a forward pass
-        with _torch.no_grad():
-            self.model(*inp)
+        try:
+            with _torch.no_grad():
+                model(x) if not (kwargs or args) else model(x, *args, **kwargs)
+        finally:
+            for hook in self.hooks:
+                hook.remove()
 
-        # remove hooks
-        for h in self.hooks:
-            h.remove()
+    def prep_names_dict(self, module, parent_name=""):
+        for key, m in module.named_children():
+            num_named_children = len(list(m.named_children()))
+            if parent_name and num_named_children > 0:
+                name = parent_name + "." + key
+            elif parent_name:
+                cls_name = str(m.__class__).split(".")[-1].split("'")[0]
+                name = parent_name + "." + cls_name + "_" + key
+            else:
+                name = key
+            self.module_names[name] = m
+
+            if isinstance(m, _torch.nn.Module):
+                self.prep_names_dict(m, parent_name=name)
 
     def register_hook(self, module):
-        if len(list(module.children())) == 0:
+        # ignore Sequential and ModuleList
+        if not module._modules:
             self.hooks.append(module.register_forward_hook(self.hook))
 
     def hook(self, module, inp, out):
-        # print('module {}, inp {}, out {}'.format(module, inp ,out))
-        class_name = str(module.__class__).split(".")[-1].split("'")[0]
         module_idx = len(self.summary)
 
-        m_key = "%s-%i" % (class_name, module_idx + 1)
-        self.summary[m_key] = _OrderedDict()
-        if isinstance(out, (list, tuple)):
-            self.summary[m_key]["out_shape"] = [[self.batch_size] +
-                                                list(o.size())[1:]
-                                                for o in out]
-        else:
-            self.summary[m_key]["out_shape"] = [self.batch_size] + list(
-                out.size())[1:]
+        # Lookup name in dict that includes parents
+        for name, item in self.module_names.items():
+            if item == module:
+                m_key = "{}_{}".format(module_idx, name)
+                break
 
-        # compute module parameters
-        params = 0
-        if hasattr(module, "weight") and hasattr(module.weight, "size"):
-            params += \
-                _torch.prod(_torch.Tensor(list(module.weight.size()))).item()
-            self.summary[m_key]["trainable"] = module.weight.requires_grad
-        if hasattr(module, "bias") and hasattr(module.bias, "size"):
-            params += \
-                _torch.prod(_torch.Tensor(list(module.bias.size()))).item()
-        self.summary[m_key]["params"] = int(params)
+        m_info = _OrderedDict()
+        m_info["id"] = id(module)
+
+        # store output size
+        if isinstance(out, (list, tuple)):
+            try:
+                m_info["out"] = list(out[0].size())
+            except AttributeError:
+                # pack_padded_seq and pad_packed_seq store
+                # feature into data attribute
+                m_info["out"] = list(out[0].data.size())
+        else:
+            m_info["out"] = list(out.size())
+
+        m_info["ksize"] = "-"
+        m_info["params_t"], m_info["params"], m_info["flops"] = 0, 0, 0
+
+        for name, param in module.named_parameters():
+            m_info["params"] += param.nelement()
+            m_info["params_t"] += param.nelement() * param.requires_grad
+            if name == "weight":
+                ksize = list(param.size())
+                # to make [in_shape, out_shape, ksize, ksize]
+                if len(ksize) > 1:
+                    ksize[0], ksize[1] = ksize[1], ksize[0]
+                m_info["ksize"] = ksize
+
+        # if the current module is already-used, this is recursive.
+        # check if this module has params
+        if list(module.named_parameters()):
+            for v in self.summary.values():
+                if m_info["id"] == v["id"]:
+                    m_info["params"] = 0
+                    m_info["params_t"] = 0
+                    break
 
         # compute module flops
-        flops = _compute_flops(module, inp, out) // 2  # used dummy batch of 2
-        flops = int(flops) * max(self.batch_size, 1)
-        self.summary[m_key]["flops"] = flops
-        self.total_model_flops += flops
+        m_info["flops"] = _compute_flops(module, inp, out)
+
+        self.summary[m_key] = m_info
+        self.total_model_flops += int(m_info["flops"])
 
     def show(self):
-        print("----------------------------------------"
-              "---------------------------------------")
-        line = "{:>20}  {:>25} {:>15} {:>15}".format("Layer", "Output",
-                                                     "Params", "FLOPs")
-        print(line)
-        print("========================================"
-              "=======================================")
+        # calculate max field lengths
+        max_layer, max_out = len('Layer'), len('Output')
+        max_params, max_ksize = len('Params'), len('Kernel')
+        max_flops = len('FLOPs')
         total_params, total_output, trainable_params, total_flops = 0, 0, 0, 0
         for layer in self.summary:
-            line = "{:>20}  {:>25} {:>15} {:>15}".format(
-                layer, str(self.summary[layer]["out_shape"]),
-                "{0:,}".format(self.summary[layer]["params"]),
-                "{0:,}".format(self.summary[layer]["flops"]))
+            max_layer = max(max_layer, len(layer))
+            max_out = max(max_out, len(str(self.summary[layer]["out"])))
+            max_params = max(max_params, len("{0:,}".format(
+                self.summary[layer]["params"])))
+            max_ksize = max(max_ksize, len(str(self.summary[layer]["ksize"])))
+            max_flops = max(max_flops, len("{0:,}".format(
+                self.summary[layer]["flops"])))
             total_params += self.summary[layer]["params"]
-            total_output += _np.prod(self.summary[layer]["out_shape"])
-            total_flops += self.summary[layer]["flops"]
-            if "trainable" in self.summary[layer]:
-                if self.summary[layer]["trainable"]:
-                    trainable_params += self.summary[layer]["params"]
-            print(line)
+            total_output += _np.prod(self.summary[layer]["out"])
+            total_flops += int(self.summary[layer]["flops"])
+            trainable_params += self.summary[layer]["params_t"]
 
         # calculate total values
-        ib = self.input_bytes
-        total_input_size = abs(
-            sum([_np.prod(input_item) for input_item in self.input_size]) *
-            self.batch_size * ib / (1024**2.))
+        ib = self.x.element_size()
+        total_input_size = _np.prod(list(self.x.size())) * ib / (1024**2.)
         # x2 output size for gradients
-        total_output_size = abs(2. * total_output * ib / (1024**2.))
-        total_params_size = abs(total_params * ib / (1024**2.))
+        total_output_size = (2. * total_output * ib) / (1024**2.)
+        total_params_size = (total_params * ib) / (1024**2.)
         total_size = total_params_size + total_output_size + total_input_size
-        total_flops_size = abs(total_flops / (1e9))
+        if total_flops > (1e9):
+            total_flops_size = total_flops / (1e9)
+            tfs_str = "GFLOPs"
+        elif total_flops > (1e6):
+            total_flops_size = total_flops / (1e6)
+            tfs_str = "MFLOPs"
+        else:
+            total_flops_size = total_flops / (1e3)
+            tfs_str = "KFLOPs"
 
-        print("========================================"
-              "=======================================")
-        print("Total params: {0:,}".format(total_params))
-        print("Trainable params: {0:,}".format(trainable_params))
-        print("Non-trainable params: {0:,}".format(total_params -
-                                                   trainable_params))
-        print("Total FLOPs: {0:,} / {1:.2f} GFLOPs".format(
-            total_flops, total_flops_size))
-        print("----------------------------------------"
-              "---------------------------------------")
-        print("Input size (MB): %0.2f" % total_input_size)
-        print("Forward/backward pass size (MB): %0.2f" % total_output_size)
-        print("Params size (MB): %0.2f" % total_params_size)
-        print("Estimated Total Size (MB): %0.2f" % total_size)
-        print("----------------------------------------"
-              "---------------------------------------")
+        # calculate total line length
+        total_line_len = max_layer + max_out
+        total_line_len += 3   # adjust for spaces
+        if not self.compact:
+            total_line_len += max_params + max_ksize + max_flops
+            total_line_len += 3*3   # adjust for spaces
+
+        # prepare summary lines
+        _lines = {}
+        _lines['param'] = "Total params: {:,}".format(total_params)
+        _lines['param_t'] = "Trainable params: {:,}".format(trainable_params)
+        _lines['param_nt'] = "Non-trainable params: {:,}".format(
+            total_params - trainable_params)
+        _lines['flops'] = "Total FLOPs: {:,} / {:.2f} {}".format(
+            total_flops, total_flops_size, tfs_str)
+        _lines['inp_size'] = "Input size (MB): {:.2f}".format(
+            total_input_size)
+        _lines['pass_size'] = "Forward/backward pass size (MB): {:.2f}".format(
+            total_output_size)
+        _lines['param_size'] = "Params size (MB): {:.2f}".format(
+            total_params_size)
+        _lines['est_total'] = "Estimated Total Size (MB): {:.2f}".format(
+            total_size)
+
+        for k, v in _lines.items():
+            total_line_len = max(total_line_len, len(v))
+
+        _lines['-'] = "-"*total_line_len
+        _lines['='] = "="*total_line_len
+
+        # print summary
+        print(_lines['='])
+        if self.compact:
+            header = "{:<{ml}}   {:>{mo}}".format(
+                "Layer", "Output", ml=max_layer,
+                mo=max(max_out, total_line_len-max_layer-3))
+        else:
+            header = "{:<{ml}}   {:^{mk}}   {:^{mo}}" \
+                     "   {:^{mp}}   {:>{mf}}".format(
+                      "Layer", "Kernel", "Output", "Params", "FLOPs",
+                      ml=max_layer, mk=max_ksize, mo=max_out, mp=max_params,
+                      mf=max_flops)
+        print(header)
+        print(_lines['='])
+        for layer in self.summary:
+            if self.compact:
+                line = "{:<{ml}}   {:>{mo}}".format(
+                        layer, str(self.summary[layer]["out"]), ml=max_layer,
+                        mo=max(max_out, total_line_len-max_layer-3))
+            else:
+                line = "{:<{ml}}   {:>{mk}}   {:>{mo}}" \
+                       "   {:>{mp}}   {:>{mf}}".format(
+                        layer, str(self.summary[layer]["ksize"]),
+                        str(self.summary[layer]["out"]),
+                        "{0:,}".format(self.summary[layer]["params"]),
+                        "{0:,}".format(int(self.summary[layer]["flops"])),
+                        ml=max_layer, mk=max_ksize, mo=max_out,
+                        mp=max_params, mf=max_flops)
+            print(line)
+        print(_lines['='])
+        print("{}\n{}\n{}\n{}".format(_lines['param'], _lines['param_t'],
+                                      _lines['param_nt'], _lines['flops']))
+        print(_lines['-'])
+        print("{}\n{}\n{}\n{}".format(_lines['inp_size'], _lines['pass_size'],
+                                      _lines['param_size'],
+                                      _lines['est_total']))
+        print(_lines['='])
 
 
-def get_model_summary(model, input_size, batch_size=-1, device='cpu'):
+def get_model_summary(model, input, compact=False, *args, **kwargs):
     """Print model summary.
 
     Args:
         model (nn.Module): PyTorch model.
-        input_size (tuple): Input size to the model.
-            Can be a list of multiple inputs.
-        batch_size (int): Batch size. (default: -1)
-        device (str): Device to map the checkpoint, "cpu" or "cuda".
-            (default: 'cpu')
+        input (torch.Tensor): Input tensor for model. Shape: [N, C, H, W].
+            Input dtype and device must match to the model.
+        compact (bool): To print compact summary, only layer and output shape.
+        args (*): Other arguments used in model.forward function.
+        kwargs (**): Other arguments used in model.forward function.
 
     Returns:
         None: Returns nothing.
@@ -157,67 +230,65 @@ def get_model_summary(model, input_size, batch_size=-1, device='cpu'):
         import torchutils as tu
 
         model = torchvision.models.alexnet()
-        tu.get_model_summary(model, (3, 224, 224))
+        tu.get_model_summary(model, torch.rand((1, 3, 224, 224)), compact=True)
 
     Out::
 
-        -----------------------------------------------------------------------
-                  Layer                  Output          Params           FLOPs
-        =======================================================================
-               Conv2d-1        [-1, 64, 55, 55]          23,296      70,470,400
-                 ReLU-2        [-1, 64, 55, 55]               0               0
-            MaxPool2d-3        [-1, 64, 27, 27]               0               0
-               Conv2d-4       [-1, 192, 27, 27]         307,392     224,088,768
-                 ReLU-5       [-1, 192, 27, 27]               0               0
-            MaxPool2d-6       [-1, 192, 13, 13]               0               0
-               Conv2d-7       [-1, 384, 13, 13]         663,936     112,205,184
-                 ReLU-8       [-1, 384, 13, 13]               0               0
-               Conv2d-9       [-1, 256, 13, 13]         884,992     149,563,648
-                ReLU-10       [-1, 256, 13, 13]               0               0
-              Conv2d-11       [-1, 256, 13, 13]         590,080      99,723,520
-                ReLU-12       [-1, 256, 13, 13]               0               0
-           MaxPool2d-13         [-1, 256, 6, 6]               0               0
-             Dropout-14              [-1, 9216]               0               0
-              Linear-15              [-1, 4096]      37,752,832      75,493,376
-                ReLU-16              [-1, 4096]               0               0
-             Dropout-17              [-1, 4096]               0               0
-              Linear-18              [-1, 4096]      16,781,312      33,550,336
-                ReLU-19              [-1, 4096]               0               0
-              Linear-20              [-1, 1000]       4,097,000       8,191,000
-        =======================================================================
+        ===========================================
+        Layer                                Output
+        ===========================================
+        0_features.Conv2d_0         [1, 64, 55, 55]
+        1_features.ReLU_1           [1, 64, 55, 55]
+        2_features.MaxPool2d_2      [1, 64, 27, 27]
+        3_features.Conv2d_3        [1, 192, 27, 27]
+        4_features.ReLU_4          [1, 192, 27, 27]
+        5_features.MaxPool2d_5     [1, 192, 13, 13]
+        6_features.Conv2d_6        [1, 384, 13, 13]
+        7_features.ReLU_7          [1, 384, 13, 13]
+        8_features.Conv2d_8        [1, 256, 13, 13]
+        9_features.ReLU_9          [1, 256, 13, 13]
+        10_features.Conv2d_10      [1, 256, 13, 13]
+        11_features.ReLU_11        [1, 256, 13, 13]
+        12_features.MaxPool2d_12     [1, 256, 6, 6]
+        13_classifier.Dropout_0           [1, 9216]
+        14_classifier.Linear_1            [1, 4096]
+        15_classifier.ReLU_2              [1, 4096]
+        16_classifier.Dropout_3           [1, 4096]
+        17_classifier.Linear_4            [1, 4096]
+        18_classifier.ReLU_5              [1, 4096]
+        19_classifier.Linear_6            [1, 1000]
+        ===========================================
         Total params: 61,100,840
         Trainable params: 61,100,840
         Non-trainable params: 0
-        Total FLOPs: 773,286,232 / 0.77 GFLOPs
-        -----------------------------------------------------------------------
+        Total FLOPs: 773,286,232 / 773.29 MFLOPs
+        -------------------------------------------
         Input size (MB): 0.57
         Forward/backward pass size (MB): 8.31
         Params size (MB): 233.08
         Estimated Total Size (MB): 241.96
-        -----------------------------------------------------------------------
+        ===========================================
 
     """
 
     _validate_param(model, 'model', 'model')
-    _validate_param(input_size, 'input_size', ['tuple', 'list'])
-    _validate_param(batch_size, 'batch_size', 'int')
-    _validate_param(device, 'device', 'str')
-    assert (device.lower() in {'cpu', 'cuda'})
-    summary = _ModelSummary(model, input_size, batch_size, device.lower())
+    _validate_param(input, 'input', 'tensor')
+    _validate_param(compact, 'compact', 'bool')
+    summary = _ModelSummary(model, input, compact, *args, **kwargs)
     summary.show()
 
 
-def get_model_flops(model, input_size, device='cpu', unit='FLOP'):
+def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
     """Count total FLOPs for the PyTorch model.
 
     Args:
         model (nn.Module): PyTorch model.
-        input_size (tuple): Input size to the model.
-            Can be a list of multiple inputs.
-        device (str): Device to map the checkpoint, "cpu" or "cuda".
-            (default: 'cpu')
+        input (torch.Tensor): Input tensor for model. Shape: [N, C, H, W].
+            Input dtype and device must match to the model.
         unit (str): FLOPs unit. Can be 'FLOP', 'MFLOP' or 'GFLOP'.
             (default: 'FLOP')
+        args (*): Other arguments used in model.forward function.
+        kwargs (**): Other arguments used in model.forward function.
 
     Returns:
         float: Number of FLOPs.
@@ -238,12 +309,10 @@ def get_model_flops(model, input_size, device='cpu', unit='FLOP'):
     """
 
     _validate_param(model, 'model', 'model')
-    _validate_param(input_size, 'input_size', ['tuple', 'list'])
-    _validate_param(device, 'device', 'str')
+    _validate_param(input, 'input', 'tensor')
     _validate_param(unit, 'unit', 'str')
-    assert (device.lower() in {'cpu', 'cuda'})
     assert (unit in {'GFLOP', 'MFLOP', 'FLOP'})
-    summary = _ModelSummary(model, input_size, device=device.lower())
+    summary = _ModelSummary(model, input, *args, **kwargs)
     flops = summary.total_model_flops
     if unit == 'GFLOP':
         flops /= 1e9

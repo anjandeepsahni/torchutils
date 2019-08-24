@@ -1,3 +1,4 @@
+import torch as _torch
 import torch.nn as _nn
 import torch.optim as _optim
 
@@ -7,9 +8,11 @@ def _validate_param(val, name, param_type):
         'int': int,
         'str': str,
         'list': list,
+        'bool': bool,
         'float': float,
         'tuple': tuple,
         'model': _nn.Module,
+        'tensor': _torch.Tensor,
         'optimizer': _optim.Optimizer,
         'scheduler': [
             _optim.lr_scheduler._LRScheduler,
