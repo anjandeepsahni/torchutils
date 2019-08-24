@@ -218,14 +218,16 @@ def get_model_summary(model, input, compact=False, *args, **kwargs):
         input (torch.Tensor): Input tensor for model. Shape: [N, C, H, W].
             Input dtype and device must match to the model.
         compact (bool): To print compact summary, only layer and output shape.
-        args (*): Other arguments used in model.forward function.
-        kwargs (**): Other arguments used in model.forward function.
+            (default: False)
+        *args: Other arguments used in model.forward function.
+        **kwargs: Other arguments used in model.forward function.
 
     Returns:
         None: Returns nothing.
 
     Example::
 
+        import torch
         import torchvision
         import torchutils as tu
 
@@ -287,24 +289,25 @@ def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
             Input dtype and device must match to the model.
         unit (str): FLOPs unit. Can be 'FLOP', 'MFLOP' or 'GFLOP'.
             (default: 'FLOP')
-        args (*): Other arguments used in model.forward function.
-        kwargs (**): Other arguments used in model.forward function.
+        *args: Other arguments used in model.forward function.
+        **kwargs: Other arguments used in model.forward function.
 
     Returns:
         float: Number of FLOPs.
 
     Example::
 
+        import torch
         import torchvision
         import torchutils as tu
 
         model = torchvision.models.alexnet()
-        total_flops = tu.get_model_flops(model, (3, 224, 224), unit='GFLOP')
-        print('Total model FLOPs: {:,} GFLOPs'.format(total_flops))
+        total_flops = tu.get_model_flops(model, torch.rand((1, 3, 224, 224)))
+        print('Total model FLOPs: {:,}'.format(total_flops))
 
     Out::
 
-        Total model FLOPs: 0.77 GFLOPs
+        Total model FLOPs: 773,286,232
 
     """
 

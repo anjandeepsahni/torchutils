@@ -29,6 +29,7 @@ Examples
 
 Model Summary::
 
+    import torch
     import torchvision
     import torchutils as tu
 
