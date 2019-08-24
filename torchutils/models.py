@@ -10,6 +10,7 @@ __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 
 class _ModelSummary():
+
     def __init__(self, model, x, compact=False, *args, **kwargs):
         # prepare module names
         self.module_names = {}
@@ -173,9 +174,7 @@ class _ModelSummary():
         print(_lines['='])
         if self.compact:
             header = "{:<{ml}}   {:>{mo}}".format(
-                "Layer",
-                "Output",
-                ml=max_layer,
+                "Layer", "Output", ml=max_layer,
                 mo=max(max_out, total_line_len - max_layer - 3))
         else:
             header = "{:<{ml}}   {:^{mk}}   {:^{mo}}" \
@@ -188,9 +187,7 @@ class _ModelSummary():
         for layer in self.summary:
             if self.compact:
                 line = "{:<{ml}}   {:>{mo}}".format(
-                    layer,
-                    str(self.summary[layer]["out"]),
-                    ml=max_layer,
+                    layer, str(self.summary[layer]["out"]), ml=max_layer,
                     mo=max(max_out, total_line_len - max_layer - 3))
             else:
                 line = "{:<{ml}}   {:>{mk}}   {:>{mo}}" \
