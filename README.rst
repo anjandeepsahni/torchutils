@@ -5,8 +5,8 @@ TorchUtils
 .. image:: https://badge.fury.io/py/torchutils.svg
     :target: https://badge.fury.io/py/torchutils
 
-.. image:: https://travis-ci.org/anjandeepsahni/pytorch_utils.svg?branch=master
-    :target: https://travis-ci.org/anjandeepsahni/pytorch_utils
+.. image:: https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master
+    :target: https://travis-ci.org/anjandeepsahni/torchutils
 
 |
 
