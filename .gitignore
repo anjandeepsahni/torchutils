@@ -2,6 +2,7 @@ build/*
 dist/*
 torchutils.egg-info/*
 torchutils/__pycache__/*
+test/__pycache__/*
 docs/_build/*
 docs/_static/*
 !docs/_static/.gitignore
