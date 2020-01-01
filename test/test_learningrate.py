@@ -19,7 +19,7 @@ class _TestLearningRate(_unittest.TestCase):
     def test_set_lr(self):
         model = _torchvision.models.alexnet()
         optimizer = _optim.Adam(model.parameters())
-        new_lr = round(_random.uniform(0.0001, 0.001), 4)
+        new_lr = round(_random.uniform(0.0001, 0.0009), 4)
         optimizer = _tu.set_lr(optimizer, new_lr)
         revised_lr = _tu.get_lr(optimizer)
         self.assertAlmostEqual(new_lr, revised_lr)
