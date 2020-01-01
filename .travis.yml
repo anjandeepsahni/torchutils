@@ -13,6 +13,7 @@ script:             # build sphinx document
     - flake8
     - isort -rc --check-only --diff torchutils/
     - yapf -r -d --style .style.yapf torchutils/
+    - python -m unittest discover -v
 
 stages:
     - test
