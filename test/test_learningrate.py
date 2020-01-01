@@ -22,7 +22,6 @@ class _TestLearningRate(_unittest.TestCase):
         new_lr = round(_random.uniform(0.0001, 0.0009), 4)
         optimizer = _tu.set_lr(optimizer, new_lr)
         revised_lr = _tu.get_lr(optimizer)
-        self.assertTrue(False)  # FIXME: For travis testing.
         self.assertAlmostEqual(new_lr, revised_lr)
 
 
