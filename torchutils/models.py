@@ -306,7 +306,7 @@ def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
 
     Out::
 
-        Total model FLOPs: 773,286,232
+        Total model FLOPs: 773,304,664
 
     """
 
