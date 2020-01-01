@@ -14,6 +14,7 @@ TorchUtils Documentation
 
    checkpoint
    learningrate
+   metrics
    models
    utils
 
