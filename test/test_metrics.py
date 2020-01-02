@@ -1,7 +1,6 @@
 import unittest as _unittest
 
 import torch as _torch
-import torchvision as _torchvision
 
 import torchutils as _tu
 

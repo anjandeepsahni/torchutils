@@ -1,7 +1,5 @@
 import collections as _collections
 
-import torch as _torch
-
 from ._validate import _validate_param
 
 

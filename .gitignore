@@ -8,3 +8,4 @@ docs/_static/*
 !docs/_static/.gitignore
 docs/_templates/*
 .vscode/*
+.coverage
