@@ -21,7 +21,7 @@ PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
 trivial but useful functionality so that you don't have to.
 
 Key Features
-------------‰
+------------
 
 * Calculate total model parameters.
 * Calculate model FLOPs.
