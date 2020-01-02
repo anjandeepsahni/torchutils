@@ -8,6 +8,9 @@ TorchUtils
 .. image:: https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master
     :target: https://travis-ci.org/anjandeepsahni/torchutils
 
+.. image:: https://codecov.io/gh/anjandeepsahni/torchutils/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/anjandeepsahni/torchutils
+
 .. image:: https://img.shields.io/github/license/anjandeepsahni/torchutils
     :target: https://img.shields.io/github/license/anjandeepsahni/torchutils
 
