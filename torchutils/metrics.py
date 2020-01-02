@@ -1,3 +1,5 @@
+import collections as _collections
+
 import torch as _torch
 
 from ._validate import _validate_param
@@ -36,10 +38,34 @@ class Accuracy():
 
     """
 
-    def __init__(self):
+    def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
+        """Initialize accuracy object.
+
+        Args:
+            keep_hist (bool): Set as True to save accuracy history.
+                              (default:False)
+            hist_size (int): Size of accuracy history buffer.
+                             (default:0 means infinite)
+            hist_freq (int): Frequency of storing the history.
+                             (default:1 means store every iteration)
+
+        Returns:
+            None: Returns nothing.
+
+        """
+
+        _validate_param(keep_hist, 'keep_hist', 'bool')
+        _validate_param(hist_size, 'hist_size', 'int')
+        _validate_param(hist_freq, 'hist_freq', 'int')
         self._size = None
+        self._iter_count = 0
         self._num_samples = 0
+        self._keep_hist = keep_hist
+        self._hist_size = hist_size
+        self._hist_freq = hist_freq
+        self._history_start_iter = 1
         self._correct_predictions = 0
+        self._history = _collections.deque()
 
     def update(self, targets, predictions):
         """Update accuracy tracker.
@@ -80,9 +106,17 @@ class Accuracy():
         for _ in range(num_dims - 1):
             matches = matches.all(-1)
         correct_predictions = matches.sum().item()
+        iter_acc = (correct_predictions / batch_size) * 100
         self._num_samples += batch_size
         self._correct_predictions += correct_predictions
-        return (correct_predictions / batch_size) * 100
+        # store in history depending on frequency
+        if self._keep_hist and ((self._iter_count % self._hist_freq) == 0):
+            self._history.append(iter_acc)
+            if len(self._history) > self._hist_size:
+                self._history.popleft()
+                self._history_start_iter += self._hist_freq
+        self._iter_count += 1
+        return iter_acc
 
     @property
     def accuracy(self):
@@ -93,6 +127,24 @@ class Accuracy():
     def accuracy(self, val):
         raise NotImplementedError('Modifying accuracy is not supported.')
 
+    @property
+    def history(self):
+        """history (dict): Accuracy values for past iterations.
+                "acc" (list): Accuracy values.
+                "iter" (list): Iteration numbers.
+        """
+        hist_dict = {}
+        hist_dict["acc"] = list(self._history)
+        hist_dict["iter"] = list(
+            range(self._history_start_iter,
+                  self._history_start_iter + len(self._history),
+                  self._hist_freq))
+        return hist_dict
+
+    @history.setter
+    def history(self, val):
+        raise NotImplementedError('Modifying history is not supported.')
+
     def reset(self):
         """Reset accuracy tracker.
 
@@ -100,5 +152,8 @@ class Accuracy():
             None: Returns nothing.
         """
         self._size = None
+        self._iter_count = 0
         self._num_samples = 0
+        self._history_start_iter = 1
         self._correct_predictions = 0
+        self._history.clear()
