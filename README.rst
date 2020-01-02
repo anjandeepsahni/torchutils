@@ -32,6 +32,24 @@ Key Features
 * Save/load checkpoints.
 * Get/set learning rate.
 * Set random seed.
+* Easy evaluation metrics management (accuracy, loss).
+
+Requirements
+------------
+
+* Numpy >= 1.16.2
+* PyTorch >= 1.0.0
+
+Installation
+------------
+
+::
+
+    $ pip install torchutils
+
+Documentation
+-------------
+API documentation is available at: https://anjandeepsahni.github.io/torchutils/
 
 Examples
 --------
@@ -128,23 +146,6 @@ Checkpoint::
     Original learning rate: 0.001
     Checkpoint learning rate: 0.1234
     Start epoch: 1
-
-Requirements
-------------
-
-* Numpy >= 1.16.2
-* PyTorch >= 1.0.0
-
-Installation
-------------
-
-::
-
-    $ pip install torchutils
-
-Documentation
--------------
-API documentation is available at: https://anjandeepsahni.github.io/torchutils/
 
 License
 -------
