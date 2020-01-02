@@ -8,6 +8,12 @@ TorchUtils
 .. image:: https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master
     :target: https://travis-ci.org/anjandeepsahni/torchutils
 
+.. image:: https://img.shields.io/github/license/anjandeepsahni/torchutils
+    :target: https://img.shields.io/github/license/anjandeepsahni/torchutils
+
+.. image:: https://pepy.tech/badge/torchutils
+    :target: https://pepy.tech/badge/torchutils
+
 |
 
 **TorchUtils** is a Python package providing helpful utility functions for your
@@ -15,7 +21,7 @@ PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
 trivial but useful functionality so that you don't have to.
 
 Key Features
-------------
+------------‰
 
 * Calculate total model parameters.
 * Calculate model FLOPs.

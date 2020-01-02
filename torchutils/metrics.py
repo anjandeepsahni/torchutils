@@ -157,7 +157,8 @@ class Accuracy(object):
 class HammingLoss(Accuracy):
     """Calculate and track hamming loss of predictions.
 
-    The Hamming loss is the fraction of labels that are incorrectly predicted.
+    Hamming loss is an evaluation metric for multilabel classification \
+    problem. It is the fraction of labels that are incorrectly predicted.
 
     Args:
         keep_hist (bool): Set as True to save accuracy history.
