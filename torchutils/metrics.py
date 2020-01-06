@@ -1,9 +1,77 @@
 import collections as _collections
+from abc import ABC as _ABC
+from abc import abstractmethod as _abstractmethod
 
 from ._validate import _validate_param
 
 
-class Accuracy(object):
+class _MetricTracker(_ABC):
+
+    def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
+        _validate_param(keep_hist, 'keep_hist', 'bool')
+        _validate_param(hist_size, 'hist_size', 'int')
+        _validate_param(hist_freq, 'hist_freq', 'int')
+        self._size = None
+        self._iter_count = 0
+        self._num_samples = 0
+        self._keep_hist = keep_hist
+        self._hist_size = hist_size
+        self._hist_freq = hist_freq
+        self._history_start_iter = 1
+        self._correct_predictions = 0
+        self._history = _collections.deque()
+
+    @_abstractmethod
+    def reset(self):
+        self._size = None
+        self._iter_count = 0
+        self._num_samples = 0
+        self._history_start_iter = 1
+        self._correct_predictions = 0
+        self._history.clear()
+
+    @_abstractmethod
+    def update(self, targets, predictions):
+        pass
+
+    @property
+    @_abstractmethod
+    def history(self):
+        hist_dict = {}
+        hist_dict["metric"] = list(self._history)
+        hist_dict["iteration"] = list(
+            range(self._history_start_iter,
+                  self._history_start_iter + len(self._history),
+                  self._hist_freq))
+        return hist_dict
+
+    def _validate_update_inputs(self, targets, predictions):
+        _validate_param(targets, 'targets', 'tensor')
+        _validate_param(predictions, 'predictions', 'tensor')
+        tsize, psize = targets.size(), predictions.size()
+        if tsize != psize:
+            raise ValueError("targets {} and predictions {} must be of "
+                             "same shape.".format(tuple(tsize), tuple(psize)))
+        # extract non-batch dimensions
+        if not self._size:
+            self._size = tsize[1:]
+        # verify that current input size is same as previous inputs
+        # excluding batch dimension
+        if self._size != tsize[1:]:
+            raise ValueError(
+                "Excluding batch dimension, previous input size was {}, but"
+                " current input size is {}.".format(
+                    tuple(self._size), tuple(tsize[1:])))
+
+    def _update_history(self, iter_val):
+        if self._keep_hist and ((self._iter_count % self._hist_freq) == 0):
+            self._history.append(iter_val)
+            if len(self._history) > self._hist_size:
+                self._history.popleft()
+                self._history_start_iter += self._hist_freq
+
+
+class Accuracy(_MetricTracker):
     """Calculate and track accuracy of predictions.
 
     Args:
@@ -45,18 +113,7 @@ class Accuracy(object):
     """
 
     def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
-        _validate_param(keep_hist, 'keep_hist', 'bool')
-        _validate_param(hist_size, 'hist_size', 'int')
-        _validate_param(hist_freq, 'hist_freq', 'int')
-        self._size = None
-        self._iter_count = 0
-        self._num_samples = 0
-        self._keep_hist = keep_hist
-        self._hist_size = hist_size
-        self._hist_freq = hist_freq
-        self._history_start_iter = 1
-        self._correct_predictions = 0
-        self._history = _collections.deque()
+        super().__init__(keep_hist, hist_size, hist_freq)
 
     def reset(self):
         """Reset accuracy tracker.
@@ -65,12 +122,7 @@ class Accuracy(object):
             None: Returns nothing.
         """
 
-        self._size = None
-        self._iter_count = 0
-        self._num_samples = 0
-        self._history_start_iter = 1
-        self._correct_predictions = 0
-        self._history.clear()
+        super().reset()
 
     def update(self, targets, predictions):
         """Update accuracy tracker.
@@ -113,46 +165,15 @@ class Accuracy(object):
 
     @property
     def history(self):
-        """dict {"acc" -> list of accuracy values, \
-            "iter" -> list of iteration numbers} \
+        """dict {"metric" -> list of accuracy values, \
+            "iteration" -> list of iteration numbers} \
             : Accuracy values for past iterations.
         """
 
-        hist_dict = {}
-        hist_dict["acc"] = list(self._history)
-        hist_dict["iter"] = list(
-            range(self._history_start_iter,
-                  self._history_start_iter + len(self._history),
-                  self._hist_freq))
-        return hist_dict
-
-    def _validate_update_inputs(self, targets, predictions):
-        _validate_param(targets, 'targets', 'tensor')
-        _validate_param(predictions, 'predictions', 'tensor')
-        tsize, psize = targets.size(), predictions.size()
-        if tsize != psize:
-            raise ValueError("targets {} and predictions {} must be of "
-                             "same shape.".format(tuple(tsize), tuple(psize)))
-        # extract non-batch dimensions
-        if not self._size:
-            self._size = tsize[1:]
-        # verify that current input size is same as previous inputs
-        # excluding batch dimension
-        if self._size != tsize[1:]:
-            raise ValueError(
-                "Excluding batch dimension, previous input size was {}, but"
-                " current input size is {}.".format(
-                    tuple(self._size), tuple(tsize[1:])))
-
-    def _update_history(self, iter_val):
-        if self._keep_hist and ((self._iter_count % self._hist_freq) == 0):
-            self._history.append(iter_val)
-            if len(self._history) > self._hist_size:
-                self._history.popleft()
-                self._history_start_iter += self._hist_freq
+        return super().history()
 
 
-class HammingLoss(Accuracy):
+class HammingLoss(_MetricTracker):
     """Calculate and track hamming loss of predictions.
 
     Hamming loss is an evaluation metric for multilabel classification \
@@ -177,7 +198,7 @@ class HammingLoss(Accuracy):
     """
 
     def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
-        super(Accuracy, self).__init__(keep_hist, hist_size, hist_freq)
+        super().__init__(keep_hist, hist_size, hist_freq)
 
     def reset(self):
         """Reset hamming loss tracker.
@@ -185,7 +206,8 @@ class HammingLoss(Accuracy):
         Returns:
             None: Returns nothing.
         """
-        super(Accuracy, self).reset()
+
+        super().reset()
 
     def update(self, targets, predictions):
         """Update hamming loss tracker.
@@ -200,7 +222,7 @@ class HammingLoss(Accuracy):
 
         """
 
-        super(Accuracy, self)._validate_update_inputs(targets, predictions)
+        self._validate_update_inputs(targets, predictions)
         tsize = targets.size()
         # verify that input is (N,Classes)
         if len(self._size) != 1:
@@ -216,7 +238,7 @@ class HammingLoss(Accuracy):
         self._num_samples += batch_size
         self._correct_predictions += correct_predictions
         # store in history depending on frequency
-        super(Accuracy, self)._update_history(iter_loss)
+        self._update_history(iter_loss)
         self._iter_count += 1
         return iter_loss
 
@@ -229,9 +251,10 @@ class HammingLoss(Accuracy):
                      (num_labels * self._num_samples))) * 100
 
     @property
-    def accuracy(self):
-        """float: Current inverse hamming loss (percentage)."""
+    def history(self):
+        """dict {"metric" -> list of hamming loss values, \
+            "iteration" -> list of iteration numbers} \
+            : Hamming loss values for past iterations.
+        """
 
-        num_labels = self._size[0]
-        return (self._correct_predictions /
-                (num_labels * self._num_samples)) * 100
+        return super().history()
