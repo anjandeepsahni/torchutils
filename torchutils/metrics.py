@@ -7,11 +7,17 @@ from ._validate import _validate_param
 
 class _MetricTracker(_ABC):
 
-    def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
+    def __init__(self, name, fmt=':f', keep_hist=False, hist_size=0,
+                 hist_freq=1):
         _validate_param(keep_hist, 'keep_hist', 'bool')
         _validate_param(hist_size, 'hist_size', 'int')
         _validate_param(hist_freq, 'hist_freq', 'int')
+        self._val = 0
+        self._avg = 0
+        self._sum = 0
+        self._fmt = fmt
         self._size = None
+        self._name = name
         self._iter_count = 0
         self._num_samples = 0
         self._keep_hist = keep_hist
@@ -20,6 +26,11 @@ class _MetricTracker(_ABC):
         self._history_start_iter = 1
         self._correct_predictions = 0
         self._history = _collections.deque()
+
+    def __str__(self):
+        fmtstr = '{_name} - Val: {_val' + self._fmt \
+                    + '} Avg: {_avg' + self._fmt + '}'
+        return fmtstr.format(**self.__dict__)
 
     @_abstractmethod
     def reset(self):
@@ -113,7 +124,8 @@ class Accuracy(_MetricTracker):
     """
 
     def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
-        super().__init__(keep_hist, hist_size, hist_freq)
+        super().__init__(name="Accuracy", fmt=":.4f", keep_hist=keep_hist,
+                         hist_size=hist_size, hist_freq=hist_freq)
 
     def reset(self):
         """Reset accuracy tracker.
@@ -150,8 +162,10 @@ class Accuracy(_MetricTracker):
             matches = matches.all(-1)
         correct_predictions = matches.sum().item()
         iter_acc = (correct_predictions / batch_size) * 100
+        self._val = iter_acc
         self._num_samples += batch_size
         self._correct_predictions += correct_predictions
+        self._avg = self.accuracy
         # store in history depending on frequency
         self._update_history(iter_acc)
         self._iter_count += 1
@@ -198,7 +212,8 @@ class HammingLoss(_MetricTracker):
     """
 
     def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
-        super().__init__(keep_hist, hist_size, hist_freq)
+        super().__init__(name="Hamming Loss", fmt=":.4f", keep_hist=keep_hist,
+                         hist_size=hist_size, hist_freq=hist_freq)
 
     def reset(self):
         """Reset hamming loss tracker.
@@ -235,8 +250,10 @@ class HammingLoss(_MetricTracker):
         wrong_pred = (targets.byte() ^ predictions.byte()).sum().item()
         correct_predictions = batch_size * num_labels - wrong_pred
         iter_loss = wrong_pred / (num_labels * batch_size)
+        self._val = iter_loss
         self._num_samples += batch_size
         self._correct_predictions += correct_predictions
+        self._avg = self.loss
         # store in history depending on frequency
         self._update_history(iter_loss)
         self._iter_count += 1
@@ -255,6 +272,77 @@ class HammingLoss(_MetricTracker):
         """dict {"metric" -> list of hamming loss values, \
             "iteration" -> list of iteration numbers} \
             : Hamming loss values for past iterations.
+        """
+
+        return super().history()
+
+
+class RunningLoss(_MetricTracker):
+    """Track and maintain running average of loss.
+
+    Args:
+        keep_hist (bool): Set as True to save accuracy history.
+                            (default:False)
+        hist_size (int): Size of accuracy history buffer.
+                            (default:0 means infinite)
+        hist_freq (int): Frequency of storing the history.
+                            (default:1 means store every iteration)
+
+    Example::
+
+        Placeholder
+
+    Out::
+
+        Placeholder
+
+    """
+
+    def __init__(self, keep_hist=False, hist_size=0, hist_freq=1):
+        super().__init__(name="Loss", fmt=":.4f", keep_hist=keep_hist,
+                         hist_size=hist_size, hist_freq=hist_freq)
+
+    def reset(self):
+        """Reset running loss tracker.
+
+        Returns:
+            None: Returns nothing.
+        """
+
+        super().reset()
+
+    def update(self, val):
+        """Update running loss tracker.
+
+        Args:
+            val (float): Loss value.
+
+        Returns:
+            float: Running (average) loss after latest update.
+
+        """
+
+        _validate_param(val, 'val', 'float')
+        self._val = val
+        self._num_samples += 1
+        self._sum += val
+        self._avg = self.loss
+        # store in history depending on frequency
+        self._update_history(val)
+        self._iter_count += 1
+        return self.loss
+
+    @property
+    def loss(self):
+        """float: Current running (average) loss."""
+
+        return self._sum / self._num_samples
+
+    @property
+    def history(self):
+        """dict {"metric" -> list of loss values, \
+            "iteration" -> list of iteration numbers} \
+            : Loss values for past iterations.
         """
 
         return super().history()
