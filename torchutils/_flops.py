@@ -107,7 +107,8 @@ def _compute_flops(module, inp, out):
         _nn.Dropout: _zero_flops,
         _nn.Upsample: _upsample_flops,
         _nn.UpsamplingBilinear2d: _upsample_flops,
-        _nn.UpsamplingNearest2d: _upsample_flops
+        _nn.UpsamplingNearest2d: _upsample_flops,
+        _nn.Softmax: _softmax_flops
     }
     if type(module) in flop_func:
         if isinstance(inp, tuple):
