@@ -77,7 +77,7 @@ class _MetricTracker(_ABC):
     def _update_history(self, iter_val):
         if self._keep_hist and ((self._iter_count % self._hist_freq) == 0):
             self._history.append(iter_val)
-            if len(self._history) > self._hist_size:
+            if self._hist_size != 0 and len(self._history) > self._hist_size:
                 self._history.popleft()
                 self._history_start_iter += self._hist_freq
 
@@ -184,7 +184,7 @@ class Accuracy(_MetricTracker):
             : Accuracy values for past iterations.
         """
 
-        return super().history()
+        return super().history
 
 
 class HammingLoss(_MetricTracker):
@@ -233,7 +233,7 @@ class HammingLoss(_MetricTracker):
                                              Must be (N, Classes).
 
         Returns:
-            float: Hamming loss of current batch of predictions (percentage).
+            float: Hamming loss of current batch of predictions.
 
         """
 
@@ -261,11 +261,11 @@ class HammingLoss(_MetricTracker):
 
     @property
     def loss(self):
-        """float: Current running hamming loss (percentage)."""
+        """float: Current running hamming loss."""
 
         num_labels = self._size[0]
         return (1 - (self._correct_predictions /
-                     (num_labels * self._num_samples))) * 100
+                     (num_labels * self._num_samples)))
 
     @property
     def history(self):
@@ -274,7 +274,7 @@ class HammingLoss(_MetricTracker):
             : Hamming loss values for past iterations.
         """
 
-        return super().history()
+        return super().history
 
 
 class RunningLoss(_MetricTracker):
@@ -345,4 +345,4 @@ class RunningLoss(_MetricTracker):
             : Loss values for past iterations.
         """
 
-        return super().history()
+        return super().history
