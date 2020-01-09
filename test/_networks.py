@@ -7,6 +7,10 @@ class _SampleNetwork(_nn.Module):
     def __init__(self, num_classes=1000):
         super(_SampleNetwork, self).__init__()
         self.features = _nn.Sequential(
+            # upsampling layers only for code coverage
+            _nn.Upsample(scale_factor=1, mode='nearest'),
+            _nn.Upsample(scale_factor=1, mode='bilinear'),
+            _nn.Upsample(scale_factor=1, mode='bicubic'),
             _nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
             _nn.ReLU(inplace=True),
             _nn.BatchNorm2d(64),

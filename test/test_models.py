@@ -25,17 +25,17 @@ class _TestModels(_unittest.TestCase):
 
     def test_get_model_flops(self):
         model = _SampleNetwork()
-        alexnet_flops = 774416847
-        alexnet_mflops = 774.42
-        alexnet_gflops = 0.77
+        samplenet_flops = 815360463
+        samplenet_mflops = 815.36
+        samplenet_gflops = 0.82
         flops = _tu.get_model_flops(model, _torch.rand((1, 3, 224, 224)))
         mflops = _tu.get_model_flops(model, _torch.rand((1, 3, 224, 224)),
                                      'MFLOP')
         gflops = _tu.get_model_flops(model, _torch.rand((1, 3, 224, 224)),
                                      'GFLOP')
-        self.assertAlmostEqual(flops, alexnet_flops)
-        self.assertAlmostEqual(mflops, alexnet_mflops)
-        self.assertAlmostEqual(gflops, alexnet_gflops)
+        self.assertAlmostEqual(flops, samplenet_flops)
+        self.assertAlmostEqual(mflops, samplenet_mflops)
+        self.assertAlmostEqual(gflops, samplenet_gflops)
 
     def test_get_model_summary(self):
         # suppress summary print output
