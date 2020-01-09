@@ -60,7 +60,7 @@ class _TestModels(_unittest.TestCase):
     def test_get_model_flops(self):
         model = _SampleNetwork()
         alexnet_flops = 774416847
-        alexnet_mflops = 774.44
+        alexnet_mflops = 774.42
         alexnet_gflops = 0.77
         flops = _tu.get_model_flops(model, _torch.rand((1, 3, 224, 224)))
         mflops = _tu.get_model_flops(model, _torch.rand((1, 3, 224, 224)),

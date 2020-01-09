@@ -1,8 +1,6 @@
-import warnings as _warnings
-
 from ._validate import _validate_param
 
-__all__ = ['get_lr', 'set_lr', 'get_current_lr', 'set_current_lr']
+__all__ = ['get_lr', 'set_lr']
 
 
 def get_lr(optimizer):
@@ -67,34 +65,6 @@ def set_lr(optimizer, lr):
 
     """
 
-    _validate_param(optimizer, 'optimizer', 'optimizer')
-    _validate_param(lr, 'lr', 'float')
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
-    return optimizer
-
-
-########################################################################
-#                    BACKWARD COMPATIBILITY SECTION                    #
-########################################################################
-
-
-def get_current_lr(optimizer):
-    _warnings.simplefilter('always', DeprecationWarning)
-    _warnings.warn(('torchutils.get_current_lr is deprecated. '
-                    'This will be an error in future releases. '
-                    'Please use torchutils.get_lr instead.'),
-                   DeprecationWarning)
-    _validate_param(optimizer, 'optimizer', 'optimizer')
-    return optimizer.param_groups[0]['lr']
-
-
-def set_current_lr(optimizer, lr):
-    _warnings.simplefilter('always', DeprecationWarning)
-    _warnings.warn(('torchutils.set_current_lr is deprecated. '
-                    'This will be an error in future releases. '
-                    'Please use torchutils.set_lr instead.'),
-                   DeprecationWarning)
     _validate_param(optimizer, 'optimizer', 'optimizer')
     _validate_param(lr, 'lr', 'float')
     for param_group in optimizer.param_groups:
