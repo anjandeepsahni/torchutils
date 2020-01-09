@@ -1,47 +1,13 @@
 import unittest as _unittest
+from contextlib import redirect_stdout as _redirect_stdout
+from io import StringIO as _StringIO
 
 import torch as _torch
-import torch.nn as _nn
 import torchvision as _torchvision
 
 import torchutils as _tu
 
-
-class _SampleNetwork(_nn.Module):
-
-    def __init__(self, num_classes=1000):
-        super(_SampleNetwork, self).__init__()
-        self.features = _nn.Sequential(
-            _nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
-            _nn.ReLU(inplace=True),
-            _nn.BatchNorm2d(64),
-            _nn.AvgPool2d(kernel_size=3, stride=2),
-            _nn.Conv2d(64, 192, kernel_size=5, padding=2),
-            _nn.LeakyReLU(inplace=True),
-            _nn.MaxPool2d(kernel_size=3, stride=2),
-            _nn.Conv2d(192, 384, kernel_size=3, padding=1),
-            _nn.ReLU(inplace=True),
-            _nn.Conv2d(384, 256, kernel_size=3, padding=1),
-            _nn.ReLU(inplace=True),
-            _nn.Conv2d(256, 256, kernel_size=3, padding=1),
-            _nn.ReLU(inplace=True),
-            _nn.MaxPool2d(kernel_size=3, stride=2),
-        )
-        self.avgpool = _nn.AdaptiveAvgPool2d((6, 6))
-        self.classifier = _nn.Sequential(_nn.Dropout(),
-                                         _nn.Linear(256 * 6 * 6, 4096),
-                                         _nn.LeakyReLU(inplace=True),
-                                         _nn.Dropout(), _nn.Linear(4096, 4096),
-                                         _nn.LeakyReLU(inplace=True),
-                                         _nn.Linear(4096, num_classes),
-                                         _nn.Softmax(-1))
-
-    def forward(self, x):
-        x = self.features(x)
-        x = self.avgpool(x)
-        x = _torch.flatten(x, 1)
-        x = self.classifier(x)
-        return x
+from ._networks import _RecursiveNetwork, _SampleNetwork
 
 
 class _TestModels(_unittest.TestCase):
@@ -70,6 +36,22 @@ class _TestModels(_unittest.TestCase):
         self.assertAlmostEqual(flops, alexnet_flops)
         self.assertAlmostEqual(mflops, alexnet_mflops)
         self.assertAlmostEqual(gflops, alexnet_gflops)
+
+    def test_get_model_summary(self):
+        # suppress summary print output
+        with _redirect_stdout(_StringIO()) as _:
+            # test compact representation
+            model = _torchvision.models.alexnet()
+            _tu.get_model_summary(model, _torch.rand((1, 3, 224, 224)),
+                                  compact=True)
+            # test with deeper network
+            model = _torchvision.models.resnet152()
+            _tu.get_model_summary(model, _torch.rand((1, 3, 224, 224)))
+            # test recursive network
+            model = _RecursiveNetwork()
+            _tu.get_model_summary(model, _torch.rand((1, 10)))
+        # pass if no error in printing summary
+        self.assertTrue(True)
 
 
 if __name__ == '__main__':
