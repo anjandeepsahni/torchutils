@@ -218,7 +218,7 @@ def get_model_summary(model, *input, compact=False, **kwargs):
 
     Args:
         model (nn.Module): PyTorch model.
-        input (user dependent): Input(s) for model. Shape: [N, *].
+        input (user dependent): Input(s) for model. Shape: [N, \\*].
             Input dtype and device must match to the model.
             Can be comma separated inputs for multi-input models.
         compact (bool): To print compact summary, only layer and output shape.
@@ -288,7 +288,7 @@ def get_model_flops(model, *input, unit='FLOP', **kwargs):
 
     Args:
         model (nn.Module): PyTorch model.
-        input (user dependent): Input(s) for model. Shape: [N, *].
+        input (user dependent): Input(s) for model. Shape: [N, \\*].
             Input dtype and device must match to the model.
             Can be comma separated inputs for multi-input models.
         unit (str): FLOPs unit. Can be 'FLOP', 'MFLOP' or 'GFLOP'.
