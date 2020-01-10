@@ -125,12 +125,12 @@ class _ModelSummary():
             trainable_params += self.summary[layer]["params_t"]
 
         # calculate total values.
-        # assumes first value to be tensor.
-        ib = self.x[0].element_size()
         total_input_size = _np.sum([
             _np.prod(list(_x.size())) * _x.element_size()
             for _x in self.x if isinstance(_x, _torch.Tensor)
         ]) / (1024**2.)
+        # assumes default float, 4 bytes as size.
+        ib = 4
         # x2 output size for gradients
         total_output_size = (2. * total_output * ib) / (1024**2.)
         total_params_size = (total_params * ib) / (1024**2.)

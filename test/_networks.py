@@ -47,3 +47,22 @@ class _MultipleInputNetwork(_nn.Module):
         inp = inp1 * inp2
         out = self.conv(inp)
         return out
+
+
+class _SequenceNetwork(_nn.Module):
+
+    def __init__(self, mode='lstm'):
+        super(_SequenceNetwork, self).__init__()
+        seq_obj = {'lstm': _nn.LSTM, 'gru': _nn.GRU, 'rnn': _nn.RNN}
+        self.embedding = _nn.Embedding(15, 32)
+        self.seq = seq_obj[mode](32, 64)
+        self.linear = _nn.Linear(64, 5)
+
+    def forward(self, sentences, lens):
+        x = _nn.utils.rnn.pad_sequence(sentences)
+        x = self.embedding(x)
+        x = _nn.utils.rnn.pack_padded_sequence(x, lens, enforce_sorted=False)
+        x, _ = self.seq(x)
+        x, _ = _nn.utils.rnn.pad_packed_sequence(x, batch_first=True)
+        x = self.linear(x)
+        return x

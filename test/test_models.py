@@ -9,7 +9,7 @@ import torchvision as _torchvision
 import torchutils as _tu
 
 from ._networks import (_CoverageNetwork, _MultipleInputNetwork,
-                        _RecursiveNetwork)
+                        _RecursiveNetwork, _SequenceNetwork)
 
 
 class _TestModels(_unittest.TestCase):
@@ -62,6 +62,27 @@ class _TestModels(_unittest.TestCase):
             gflops = _tu.get_model_flops(model, _torch.rand((1, 3, 28, 28)),
                                          unit='GFLOP')
             self.assertAlmostEqual(gflops, samplenet_gflops)
+
+    def test_get_model_flops_lstm(self):
+        model = _SequenceNetwork(mode='lstm')
+        lstm_flops = 42239200
+        sentence = _torch.randint(1, 10, (200, )).long()
+        flops = _tu.get_model_flops(model, [sentence], [len(sentence)])
+        self.assertAlmostEqual(flops, lstm_flops)
+
+    def test_get_model_flops_gru(self):
+        model = _SequenceNetwork(mode='gru')
+        lstm_flops = 32357600
+        sentence = _torch.randint(1, 10, (200, )).long()
+        flops = _tu.get_model_flops(model, [sentence], [len(sentence)])
+        self.assertAlmostEqual(flops, lstm_flops)
+
+    def test_get_model_flops_rnn(self):
+        model = _SequenceNetwork(mode='rnn')
+        lstm_flops = 12479200
+        sentence = _torch.randint(1, 10, (200, )).long()
+        flops = _tu.get_model_flops(model, [sentence], [len(sentence)])
+        self.assertAlmostEqual(flops, lstm_flops)
 
     def test_get_model_summary_compact(self):
         # suppress summary print output

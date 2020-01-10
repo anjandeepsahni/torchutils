@@ -9,3 +9,5 @@ docs/_static/*
 docs/_templates/*
 .vscode/*
 .coverage
+data/*
+temp.py
