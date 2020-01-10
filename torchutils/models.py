@@ -11,7 +11,7 @@ __all__ = ['get_model_param_count', 'get_model_flops', 'get_model_summary']
 
 class _ModelSummary():
 
-    def __init__(self, model, x, compact=False, *args, **kwargs):
+    def __init__(self, model, *x, compact=False, **kwargs):
         # prepare module names
         self.module_names = {}
         self.prep_names_dict(model)
@@ -29,7 +29,7 @@ class _ModelSummary():
         # make a forward pass
         try:
             with _torch.no_grad():
-                model(x) if not (kwargs or args) else model(x, *args, **kwargs)
+                model(*x, **kwargs)
         finally:
             for hook in self.hooks:
                 hook.remove()
@@ -124,9 +124,13 @@ class _ModelSummary():
             total_flops += int(self.summary[layer]["flops"])
             trainable_params += self.summary[layer]["params_t"]
 
-        # calculate total values
-        ib = self.x.element_size()
-        total_input_size = _np.prod(list(self.x.size())) * ib / (1024**2.)
+        # calculate total values.
+        # assumes first value to be tensor.
+        ib = self.x[0].element_size()
+        total_input_size = _np.sum([
+            _np.prod(list(_x.size())) * _x.element_size()
+            for _x in self.x if isinstance(_x, _torch.Tensor)
+        ]) / (1024**2.)
         # x2 output size for gradients
         total_output_size = (2. * total_output * ib) / (1024**2.)
         total_params_size = (total_params * ib) / (1024**2.)
@@ -209,17 +213,17 @@ class _ModelSummary():
         print(_lines['='])
 
 
-def get_model_summary(model, input, compact=False, *args, **kwargs):
+def get_model_summary(model, *input, compact=False, **kwargs):
     """Print model summary.
 
     Args:
         model (nn.Module): PyTorch model.
-        input (torch.Tensor): Input tensor for model. Shape: [N, C, H, W].
+        input (user dependent): Input(s) for model. Shape: [N, *].
             Input dtype and device must match to the model.
+            Can be comma separated inputs for multi-input models.
         compact (bool): To print compact summary, only layer and output shape.
             (default: False)
-        *args: Other arguments used in model.forward function.
-        **kwargs: Other arguments used in model.forward function.
+        **kwargs: Other keyword arguments used in model.forward function.
 
     Returns:
         None: Returns nothing.
@@ -273,23 +277,23 @@ def get_model_summary(model, input, compact=False, *args, **kwargs):
     """
 
     _validate_param(model, 'model', 'model')
-    _validate_param(input, 'input', 'tensor')
+    _validate_param(input, 'input', 'tuple')
     _validate_param(compact, 'compact', 'bool')
-    summary = _ModelSummary(model, input, compact, *args, **kwargs)
+    summary = _ModelSummary(model, *input, compact=compact, **kwargs)
     summary.show()
 
 
-def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
+def get_model_flops(model, *input, unit='FLOP', **kwargs):
     """Count total FLOPs for the PyTorch model.
 
     Args:
         model (nn.Module): PyTorch model.
-        input (torch.Tensor): Input tensor for model. Shape: [N, C, H, W].
+        input (user dependent): Input(s) for model. Shape: [N, *].
             Input dtype and device must match to the model.
+            Can be comma separated inputs for multi-input models.
         unit (str): FLOPs unit. Can be 'FLOP', 'MFLOP' or 'GFLOP'.
             (default: 'FLOP')
-        *args: Other arguments used in model.forward function.
-        **kwargs: Other arguments used in model.forward function.
+        **kwargs: Other keyword arguments used in model.forward function.
 
     Returns:
         float: Number of FLOPs.
@@ -311,10 +315,10 @@ def get_model_flops(model, input, unit='FLOP', *args, **kwargs):
     """
 
     _validate_param(model, 'model', 'model')
-    _validate_param(input, 'input', 'tensor')
+    _validate_param(input, 'input', 'tuple')
     _validate_param(unit, 'unit', 'str')
     assert (unit in {'GFLOP', 'MFLOP', 'FLOP'})
-    summary = _ModelSummary(model, input, *args, **kwargs)
+    summary = _ModelSummary(model, *input, compact=False, **kwargs)
     flops = summary.total_model_flops
     if unit == 'GFLOP':
         flops /= 1e9
