@@ -96,30 +96,52 @@ class Accuracy(_MetricTracker):
     Example::
 
         import torch
+        import torch.nn as nn
+        import torch.nn.functional as F
+        import torch.optim as optim
+        import torchvision
+        import torchvision.transforms as transforms
         import torchutils as tu
 
-        acc = tu.Accuracy()
-        # This is sample loop over batches
-        for i in range(5):
-            # generate random batch (only for example)
-            targets = torch.randint(1, 10, (10, 3, 2, 2))
-            predictions = torch.randint(-1, 0, (10, 3, 2, 2))
-            # set 5 predictions equal to targets
-            dup_idx = _torch.randperm(10)[:5]
-            predictions[dup_idx] = targets[dup_idx]
-            # track accuracy
-            batch_acc = acc.update(targets, predictions)
-            print('Running accuracy: {}'.format(acc.accuracy))
-        print('Total accuracy: {}'.format(acc.accuracy))
+        # define your network
+        model = MyNet()
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters())
+        trainset = torchvision.datasets.MNIST(root='./data/', train=True,
+                                            download=True,
+                                            transform=transforms.ToTensor())
+        trainloader = torch.utils.data.DataLoader(trainset, batch_size=60,
+                                                shuffle=True, num_workers=2,
+                                                drop_last=True)
+        n_epochs = 1
+        model.train()
+        for epoch in range(n_epochs):
+            print('Epoch: %d/%d' % (epoch + 1, n_epochs))
+            acc_tracker = tu.Accuracy()
+            for batch_idx, (data, target) in enumerate(trainloader):
+                optimizer.zero_grad()
+                outputs = model(data)
+                loss = criterion(outputs, target)
+                loss.backward()
+                optimizer.step()
+                _, predicted = torch.max(F.softmax(outputs, dim=1), 1)
+                acc_tracker.update(target, predicted)
+                if batch_idx % 100 == 0:
+                    print(acc_tracker)
 
     Out::
 
-        Running accuracy: 50.0
-        Running accuracy: 50.0
-        Running accuracy: 50.0
-        Running accuracy: 50.0
-        Running accuracy: 50.0
-        Total accuracy: 50.0
+        Epoch: 1/1
+        Accuracy - Val: 10.0000 Avg: 10.0000
+        Accuracy - Val: 91.6667 Avg: 70.9406
+        Accuracy - Val: 86.6667 Avg: 79.5937
+        Accuracy - Val: 93.3333 Avg: 83.1063
+        Accuracy - Val: 90.0000 Avg: 85.4032
+        Accuracy - Val: 88.3333 Avg: 86.9627
+        Accuracy - Val: 95.0000 Avg: 88.1364
+        Accuracy - Val: 95.0000 Avg: 89.1702
+        Accuracy - Val: 93.3333 Avg: 89.9459
+        Accuracy - Val: 95.0000 Avg: 90.5161
 
     """
 
@@ -203,11 +225,45 @@ class HammingLoss(_MetricTracker):
 
     Example::
 
-        Placeholder
+        import torch
+        import torch.nn as nn
+        import torch.optim as optim
+        import torchutils as tu
+
+        # define your network and trainloader
+        model = MyNet()
+        optimizer = optim.Adam(model.parameters())
+        criterion = nn.MultiLabelSoftMarginLoss()
+
+        n_epochs = 1
+        model.train()
+        for epoch in range(n_epochs):
+            print('Epoch: %d/%d' % (epoch + 1, n_epochs))
+            ham_tracker = tu.HammingLoss()
+            for batch_idx, (data, target) in enumerate(trainloader):
+                optimizer.zero_grad()
+                output = model(data)
+                loss = criterion(output, target)
+                loss.backward()
+                optimizer.step()
+                predicted = torch.sigmoid(output) > 0.5
+                ham_tracker.update(target, predicted)
+                if batch_idx % 100 == 0:
+                    print(ham_tracker)
 
     Out::
 
-        Placeholder
+        Epoch: 1/1
+        Hamming Loss - Val: 0.6667 Avg: 0.6667
+        Hamming Loss - Val: 1.0000 Avg: 0.8333
+        Hamming Loss - Val: 1.0000 Avg: 0.8889
+        Hamming Loss - Val: 0.0000 Avg: 0.6667
+        Hamming Loss - Val: 0.6667 Avg: 0.6667
+        Hamming Loss - Val: 0.6667 Avg: 0.6667
+        Hamming Loss - Val: 1.0000 Avg: 0.7143
+        Hamming Loss - Val: 0.6667 Avg: 0.7083
+        Hamming Loss - Val: 0.0000 Avg: 0.6296
+        Hamming Loss - Val: 0.0000 Avg: 0.5667
 
     """
 
@@ -290,11 +346,51 @@ class RunningLoss(_MetricTracker):
 
     Example::
 
-        Placeholder
+        import torch
+        import torch.nn as nn
+        import torch.optim as optim
+        import torchvision
+        import torchvision.transforms as transforms
+        import torchutils as tu
+
+        # define your network
+        model = MyNet()
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters())
+        trainset = torchvision.datasets.MNIST(root='./data/', train=True,
+                                            download=True,
+                                            transform=transforms.ToTensor())
+        trainloader = torch.utils.data.DataLoader(trainset, batch_size=60,
+                                                shuffle=True, num_workers=2,
+                                                drop_last=True)
+        n_epochs = 1
+        model.train()
+        for epoch in range(n_epochs):
+            print('Epoch: %d/%d' % (epoch + 1, n_epochs))
+            loss_tracker = tu.RunningLoss()
+            for batch_idx, (data, target) in enumerate(trainloader):
+                optimizer.zero_grad()
+                outputs = model(data)
+                loss = criterion(outputs, target)
+                loss_tracker.update(loss.item())
+                loss.backward()
+                optimizer.step()
+                if batch_idx % 100 == 0:
+                    print(loss_tracker)
 
     Out::
 
-        Placeholder
+        Epoch: 1/1
+        Loss - Val: 2.2921 Avg: 2.2921
+        Loss - Val: 0.5084 Avg: 0.9639
+        Loss - Val: 0.6027 Avg: 0.6588
+        Loss - Val: 0.1817 Avg: 0.5255
+        Loss - Val: 0.1005 Avg: 0.4493
+        Loss - Val: 0.2982 Avg: 0.3984
+        Loss - Val: 0.3103 Avg: 0.3615
+        Loss - Val: 0.0940 Avg: 0.3296
+        Loss - Val: 0.0957 Avg: 0.3071
+        Loss - Val: 0.0229 Avg: 0.2875
 
     """
 
