@@ -8,7 +8,9 @@ __all__ = ['RunningStat', 'get_dataset_stats']
 class RunningStat():
     """Calculate and track statistics of data.
 
-    Calculates mean, standard deviation and variance.
+    Calculates mean, standard deviation and variance. Uses Welford's \
+    algorithm for computing the statistics. See Knuth TAOCP Vol 2, \
+    3rd edition, page 232.
 
     Args:
         dims (int): Number of dimensions of stat. Example, 3 for RGB images.
