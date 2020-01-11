@@ -66,3 +66,16 @@ class _SequenceNetwork(_nn.Module):
         x, _ = _nn.utils.rnn.pad_packed_sequence(x, batch_first=True)
         x = self.linear(x)
         return x
+
+
+class _DummyDataset(_torch.utils.data.Dataset):
+
+    def __init__(self):
+        self.data = _torch.randn(100, 3, 24, 24) + 10000
+
+    def __getitem__(self, index):
+        x = self.data[index]
+        return x, _torch.Tensor(1)
+
+    def __len__(self):
+        return len(self.data)

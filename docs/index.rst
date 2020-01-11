@@ -13,6 +13,7 @@ TorchUtils Documentation
    :Caption: Package Reference
 
    checkpoint
+   datasets
    learningrate
    metrics
    models
