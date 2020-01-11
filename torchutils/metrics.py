@@ -4,11 +4,15 @@ from abc import abstractmethod as _abstractmethod
 
 from ._validate import _validate_param
 
+__all__ = ['Accuracy', 'HammingLoss', 'RunningLoss']
+
 
 class _MetricTracker(_ABC):
 
     def __init__(self, name, fmt=':f', keep_hist=False, hist_size=0,
                  hist_freq=1):
+        _validate_param(name, 'name', 'str')
+        _validate_param(fmt, 'fmt', 'str')
         _validate_param(keep_hist, 'keep_hist', 'bool')
         _validate_param(hist_size, 'hist_size', 'int')
         _validate_param(hist_freq, 'hist_freq', 'int')

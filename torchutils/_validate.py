@@ -18,7 +18,8 @@ def _validate_param(val, name, param_type):
         'scheduler': [
             _optim.lr_scheduler._LRScheduler,
             _optim.lr_scheduler.ReduceLROnPlateau
-        ]
+        ],
+        'dataloader': _torch.utils.data.DataLoader
     }
     if not isinstance(param_type, list):
         param_type = [param_type]
