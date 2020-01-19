@@ -37,8 +37,10 @@ Key Features
 Requirements
 ------------
 
-* Numpy >= 1.16.2
-* PyTorch >= 1.0.0
+Latest tests use the following package versions:
+
+* Numpy >= 1.17.4
+* PyTorch >= 1.4.0
 
 Installation
 ------------
