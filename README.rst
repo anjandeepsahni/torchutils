@@ -19,28 +19,30 @@ TorchUtils
 
 |
 
-**TorchUtils** is a Python package providing helpful utility functions for your
-PyTorch projects. TorchUtils helps speed up PyTorch development by implementing
-trivial but useful functionality so that you don't have to.
+**TorchUtils** is a Python package providing helpful utility APIs for your
+PyTorch projects.
 
-Key Features
-------------
+Features
+--------
 
-* Calculate total model parameters.
-* Calculate model FLOPs.
-* Print model summary in Keras style.
-* Save/load checkpoints.
-* Get/set learning rate.
-* Set random seed.
-* Easy evaluation metrics management (accuracy, loss).
+* Save/load checkpoints_.
+* Calculate dataset statistics_ (mean, std, var).
+* Get/set `learning rate`_.
+* Track `evaluation metrics`_ such as accuracy and running loss.
+* Print `model summary`_.
+* Calculate `model FLOPs`_.
+* Calculate total `model parameters`_.
+* Set `random seed`_.
+* Visualize `gradient flow`_ in your network.
 
 Requirements
 ------------
 
 Latest tests use the following package versions:
 
-* Numpy >= 1.17.4
-* PyTorch >= 1.4.0
+* Numpy == 1.17.4
+* PyTorch == 1.4.0
+* Matplotlib == 3.1.1
 
 Installation
 ------------
@@ -51,10 +53,138 @@ Installation
 
 Documentation
 -------------
-API documentation is available at: https://anjandeepsahni.github.io/torchutils/
+Detailed API documentation is available here_.
+
+.. _here: https://anjandeepsahni.github.io/torchutils/readme.html
 
 Examples
 --------
+
+.. _checkpoints:
+
+Checkpoint::
+
+    import torchvision
+    import torchutils as tu
+    import torch.optim as optim
+
+    model = torchvision.models.alexnet()
+    optimizer = optim.Adam(model.parameters())
+    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
+
+    print('Original learning rate:', tu.get_lr(optimizer))
+
+    # load checkpoint model_20190814-212442_e0_0.7531.pt
+    start_epoch = tu.load_checkpoint(model_path='.',
+                           ckpt_name='model_20190814-212442_e0_0.7531.pt',
+                           model=model, optimizer=optimizer,
+                           scheduler=scheduler)
+
+    print('Checkpoint learning rate:', tu.get_lr(optimizer))
+    print('Start from epoch:', start_epoch)
+
+    # Output
+
+    Original learning rate: 0.001
+    Checkpoint learning rate: 0.1234
+    Start epoch: 1
+
+.. _statistics:
+
+Statistics::
+
+    import torch
+    import torchutils as tu
+
+    # define your dataset and dataloader
+    dataset = MyDataset()
+    trainloader = torch.utils.data.DataLoader(dataset, batch_size=1,
+                                              num_workers=1,
+                                              shuffle=False)
+    stats = tu.get_dataset_stats(trainloader, verbose=True)
+    print('Mean:', stats['mean'])
+    print('Std:', stats['std'])
+
+    # Output
+
+    Calculating dataset stats...
+    Batch 100/100
+    Mean: tensor([10000.0098,  9999.9795,  9999.9893])
+    Std: tensor([0.9969, 1.0003, 0.9972])
+
+.. _`learning rate`:
+
+Learning Rate::
+
+    import torchvision
+    import torchutils as tu
+    import torch.optim as optim
+
+    model = torchvision.models.alexnet()
+    optimizer = optim.Adam(model.parameters())
+    current_lr = tu.get_lr(optimizer)
+    print('Current learning rate:', current_lr)
+
+    optimizer = tu.set_lr(optimizer, current_lr*0.1)
+    revised_lr = tu.get_lr(optimizer)
+    print('Revised learning rate:', revised_lr)
+
+    # Output
+
+    Current learning rate: 0.001
+    Revised learning rate: 0.0001
+
+.. _`evaluation metrics`:
+
+Evaluation Metrics::
+
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    import torchvision
+    import torchvision.transforms as transforms
+    import torchutils as tu
+
+    # define your network
+    model = MyNet()
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters())
+    trainset = torchvision.datasets.MNIST(root='./data/', train=True,
+                                        download=True,
+                                        transform=transforms.ToTensor())
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=60,
+                                            shuffle=True, num_workers=2,
+                                            drop_last=True)
+    n_epochs = 1
+    model.train()
+    for epoch in range(n_epochs):
+        print('Epoch: %d/%d' % (epoch + 1, n_epochs))
+        loss_tracker = tu.RunningLoss()
+        for batch_idx, (data, target) in enumerate(trainloader):
+            optimizer.zero_grad()
+            outputs = model(data)
+            loss = criterion(outputs, target)
+            loss_tracker.update(loss.item())
+            loss.backward()
+            optimizer.step()
+            if batch_idx % 100 == 0:
+                print(loss_tracker)
+
+    # Output
+
+    Epoch: 1/1
+    Loss - Val: 2.2921 Avg: 2.2921
+    Loss - Val: 0.5084 Avg: 0.9639
+    Loss - Val: 0.6027 Avg: 0.6588
+    Loss - Val: 0.1817 Avg: 0.5255
+    Loss - Val: 0.1005 Avg: 0.4493
+    Loss - Val: 0.2982 Avg: 0.3984
+    Loss - Val: 0.3103 Avg: 0.3615
+    Loss - Val: 0.0940 Avg: 0.3296
+    Loss - Val: 0.0957 Avg: 0.3071
+    Loss - Val: 0.0229 Avg: 0.2875
+
+.. _`model summary`:
 
 Model Summary::
 
@@ -102,52 +232,67 @@ Model Summary::
     Estimated Total Size (MB): 241.96
     =========================================================================================
 
-Learning Rate::
+.. _`model FLOPs`:
 
+Model FLOPs::
+
+    import torch
     import torchvision
     import torchutils as tu
-    import torch.optim as optim
 
     model = torchvision.models.alexnet()
-    optimizer = optim.Adam(model.parameters())
-    current_lr = tu.get_lr(optimizer)
-    print('Current learning rate:', current_lr)
-
-    optimizer = tu.set_lr(optimizer, current_lr*0.1)
-    revised_lr = tu.get_lr(optimizer)
-    print('Revised learning rate:', revised_lr)
+    total_flops = tu.get_model_flops(model, torch.rand((1, 3, 224, 224)))
+    print('Total model FLOPs: {:,}'.format(total_flops))
 
     # Output
 
-    Current learning rate: 0.001
-    Revised learning rate: 0.0001
+    Total model FLOPs: 773,304,664
 
-Checkpoint::
+.. _`model parameters`:
+
+Model Parameters::
 
     import torchvision
     import torchutils as tu
-    import torch.optim as optim
 
     model = torchvision.models.alexnet()
-    optimizer = optim.Adam(model.parameters())
-    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
-
-    print('Original learning rate:', tu.get_lr(optimizer))
-
-    # load checkpoint model_20190814-212442_e0_0.7531.pt
-    start_epoch = tu.load_checkpoint(model_path='.',
-                           ckpt_name='model_20190814-212442_e0_0.7531.pt',
-                           model=model, optimizer=optimizer,
-                           scheduler=scheduler)
-
-    print('Checkpoint learning rate:', tu.get_lr(optimizer))
-    print('Start from epoch:', start_epoch)
+    total_params = tu.get_model_param_count(model)
+    print('Total model params: {:,}'.format(total_params))
 
     # Output
 
-    Original learning rate: 0.001
-    Checkpoint learning rate: 0.1234
-    Start epoch: 1
+    Total model params: 61,100,840
+
+.. _`random seed`:
+
+Random Seed::
+
+    import torchutils as tu
+
+    tu.set_random_seed(2222)
+
+.. _`gradient flow`:
+
+Gradient Flow::
+
+    import torch
+    import torchvision
+    import torchutils as tu
+
+    criterion = torch.nn.CrossEntropyLoss()
+    net = torchvision.models.alexnet(num_classes=10)
+    out = net(torch.rand(1, 3, 224, 224))
+    ground_truth = torch.randint(0, 10, (1, ))
+    loss = criterion(out, ground_truth)
+    loss.backward()
+    tu.plot_gradients(net, './grad_figures/grad_01.png', plot_type='line')
+
+    # Saved file
+
+.. image:: https://raw.githubusercontent.com/anjandeepsahni/torchutils/master/docs/_static/example_gradient_flow.png?sanitize=true
+  :width: 480
+  :height: 360
+  :alt: Example Gradient Flow 
 
 License
 -------
