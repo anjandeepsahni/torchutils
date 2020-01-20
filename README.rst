@@ -289,7 +289,7 @@ Gradient Flow::
 
     # Saved file
 
-.. image:: https://raw.githubusercontent.com/anjandeepsahni/torchutils/master/docs/_static/example_gradient_flow.png?sanitize=true
+.. image:: https://raw.githubusercontent.com/anjandeepsahni/torchutils/master/docs/_static/example_gradient_flow.png
   :width: 480
   :height: 360
   :alt: Example Gradient Flow 
