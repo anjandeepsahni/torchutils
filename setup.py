@@ -9,10 +9,10 @@ with open("torchutils/_version.py") as fp:
 setuptools.setup(
     name='torchutils', version=torchutils_version,
     author="Anjandeep Singh Sahni", author_email="sahni.anjandeep@gmail.com",
-    description="PyTorch utility functions.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/anjandeepsahni/torchutils.git", classifiers=[
+    description="PyTorch utility APIs.", long_description=long_description,
+    long_description_content_type="text/x-rst",
+    url="https://github.com/anjandeepsahni/torchutils.git",
+    packages=setuptools.find_packages(), classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
