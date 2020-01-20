@@ -18,6 +18,7 @@ TorchUtils Documentation
    metrics
    models
    utils
+   visualize
 
 
 Indices and Tables
