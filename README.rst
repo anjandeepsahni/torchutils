@@ -26,10 +26,10 @@ Features
 --------
 
 * Save/load checkpoints_.
-* Calculate dataset statistics_ (mean, std, var).
+* Calculate dataset statistics_ (mean, std, var). Also calculate and track running statistics of data.
 * Get/set `learning rate`_.
-* Track `evaluation metrics`_ such as accuracy and running loss.
-* Print `model summary`_.
+* Track `evaluation metrics`_ such as accuracy, running loss, hamming loss.
+* Print `model summary`_. Supports: Linear/MLP, Convolution Network, Recurrent Network (RNN/LSTM/GRU), Recursive Network.
 * Calculate `model FLOPs`_.
 * Calculate total `model parameters`_.
 * Set `random seed`_.
