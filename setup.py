@@ -12,7 +12,7 @@ setuptools.setup(
     description="PyTorch utility APIs.", long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://github.com/anjandeepsahni/torchutils.git",
-    packages=setuptools.find_packages(), classifiers=[
+    packages=setuptools.find_packages(exclude=['test']), classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
