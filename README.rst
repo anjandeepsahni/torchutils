@@ -71,7 +71,7 @@ Examples
 
 .. _checkpoints:
 
-Checkpoint::
+Checkpoint:
 
 .. code:: python
 
