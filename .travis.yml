@@ -2,38 +2,15 @@
 
 language: python
 
-# Python    Pytorch     Torchvision     OS
-
-# Flake8 Tests
-
-## OS Tests
-# 3.6       latest       latest         osx     (requirements.txt with Py3.6 on osx)
-# 3.6       latest       latest         linux   (requirements.txt with Py3.6 on linux)
-
-# Python Tests
-# 3.5       latest       latest         linux   (requirements.txt with Py3.5 on linux)
-# 3.7       latest       latest         linux   (requirements.txt with Py3.7 on linux)
-
-# PyTorch Version Tests
-# torch==1.0.0 torchvision==0.2.1
-# torch==1.1.0 torchvision==0.3.0
-# torch==1.2.0 torchvision==0.4.0
-# torch==1.3.0 torchvision==0.4.2
-
-# # Numpy Versions
-# 1.16.2
-# 1.16.4
-# 1.17.2
-# 1.17.4
-
 #      language: shell  # 'language: python' is an error on Travis CI macOS
 
 matrix:
   include:      
-    - name: "Py3.5 - Linux - Latest"
+    - name: "Py3.5 - Linux - Latest - matplotlib=3.0.3"
       python: "3.5"
       os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
+      # python 3.5 only supported till matplotlib 3.0.3
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --matplotlib 3.0.3
       install: pip install -r requirements_ci.txt
       script: coverage run --source torchutils -m unittest discover -v
 
@@ -63,29 +40,30 @@ matrix:
     #   install: pip install -r requirements_ci.txt
     #   script: coverage run --source torchutils -m unittest discover -v
 
-    - name: "Py3.6 - Linux - torch=1.0.0 torchvision=0.2.1 pillow=6.2.0"
-      python: "3.6"
-      os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.0.0 --torchvision 0.2.1 --pillow 6.2.0
-      install: pip install -r requirements_ci.txt
-      script:
-        - coverage run --source torchutils -m unittest discover -v 
+    # - name: "Py3.6 - Linux - torch=1.0.0 torchvision=0.2.1 pillow=6.2.0"
+    #   python: "3.6"
+    #   os: linux
+    #   # pillow==7.0.0 does not have PILLOW_VERSION variable.
+    #   before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.0.0 --torchvision 0.2.1 --pillow 6.2.0
+    #   install: pip install -r requirements_ci.txt
+    #   script:
+    #     - coverage run --source torchutils -m unittest discover -v 
 
-    - name: "Py3.6 - Linux - torch=1.1.0 torchvision=0.3.0 pillow=6.2.0"
-      python: "3.6"
-      os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.1.0 --torchvision 0.3.0 --pillow 6.2.0
-      install: pip install -r requirements_ci.txt
-      script:
-        - coverage run --source torchutils -m unittest discover -v
+    # - name: "Py3.6 - Linux - torch=1.1.0 torchvision=0.3.0 pillow=6.2.0"
+    #   python: "3.6"
+    #   os: linux
+    #   before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.1.0 --torchvision 0.3.0 --pillow 6.2.0
+    #   install: pip install -r requirements_ci.txt
+    #   script:
+    #     - coverage run --source torchutils -m unittest discover -v
 
-    - name: "Py3.6 - Linux - torch=1.2.0 torchvision=0.4.0 pillow=6.2.0"
-      python: "3.6"
-      os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.2.0 --torchvision 0.4.0 --pillow 6.2.0
-      install: pip install -r requirements_ci.txt
-      script:
-        - coverage run --source torchutils -m unittest discover -v
+    # - name: "Py3.6 - Linux - torch=1.2.0 torchvision=0.4.0 pillow=6.2.0"
+    #   python: "3.6"
+    #   os: linux
+    #   before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.2.0 --torchvision 0.4.0 --pillow 6.2.0
+    #   install: pip install -r requirements_ci.txt
+    #   script:
+    #     - coverage run --source torchutils -m unittest discover -v
 
     - name: "Py3.6 - Linux - torch=1.3.0 torchvision=0.4.2 pillow=6.2.0"
       python: "3.6"
