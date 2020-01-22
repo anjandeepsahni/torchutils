@@ -73,6 +73,8 @@ Examples
 
 Checkpoint::
 
+.. code:: python
+
     import torchvision
     import torchutils as tu
     import torch.optim as optim
@@ -85,9 +87,9 @@ Checkpoint::
 
     # load checkpoint model_20190814-212442_e0_0.7531.pt
     start_epoch = tu.load_checkpoint(model_path='.',
-                           ckpt_name='model_20190814-212442_e0_0.7531.pt',
-                           model=model, optimizer=optimizer,
-                           scheduler=scheduler)
+                            ckpt_name='model_20190814-212442_e0_0.7531.pt',
+                            model=model, optimizer=optimizer,
+                            scheduler=scheduler)
 
     print('Checkpoint learning rate:', tu.get_lr(optimizer))
     print('Start from epoch:', start_epoch)
@@ -110,6 +112,8 @@ Statistics::
     trainloader = torch.utils.data.DataLoader(dataset, batch_size=1,
                                               num_workers=1,
                                               shuffle=False)
+    
+    # get statistics
     stats = tu.get_dataset_stats(trainloader, verbose=True)
     print('Mean:', stats['mean'])
     print('Std:', stats['std'])
@@ -131,9 +135,12 @@ Learning Rate::
 
     model = torchvision.models.alexnet()
     optimizer = optim.Adam(model.parameters())
+    
+    # get learning rate
     current_lr = tu.get_lr(optimizer)
     print('Current learning rate:', current_lr)
 
+    # set learning rate
     optimizer = tu.set_lr(optimizer, current_lr*0.1)
     revised_lr = tu.get_lr(optimizer)
     print('Revised learning rate:', revised_lr)
@@ -168,15 +175,23 @@ Evaluation Metrics::
     model.train()
     for epoch in range(n_epochs):
         print('Epoch: %d/%d' % (epoch + 1, n_epochs))
+
+        # define loss tracker
         loss_tracker = tu.RunningLoss()
+
         for batch_idx, (data, target) in enumerate(trainloader):
             optimizer.zero_grad()
             outputs = model(data)
             loss = criterion(outputs, target)
+
+            # update loss tracker with latest loss
             loss_tracker.update(loss.item())
+            
             loss.backward()
             optimizer.step()
+            
             if batch_idx % 100 == 0:
+                # easily pring latest and average loss
                 print(loss_tracker)
 
     # Output
