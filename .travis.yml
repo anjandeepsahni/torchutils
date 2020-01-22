@@ -14,21 +14,6 @@ matrix:
       install: pip install -r requirements_ci.txt
       script: coverage run --source torchutils -m unittest discover -v
 
-    # Base/default build.
-    - name: "Py3.6 - Linux - Latest (with Flake8)"
-      python: "3.6"
-      os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme
-      install: pip install -r requirements_ci.txt
-      script:
-        # only one test with flake8 is sufficient
-        - flake8
-        - isort -rc --check-only --diff torchutils/
-        - yapf -r -d --style .style.yapf torchutils/
-        - coverage run --source torchutils -m unittest discover -v
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
-
     - name: "Py3.7 - Linux - Latest"
       python: "3.7"
       os: linux
@@ -112,21 +97,26 @@ matrix:
         - coverage run --source torchutils -m unittest discover -v
 
     # Deploy build for docs
-    - name: "Py3.6 - Linux - Latest (Deploy)"
+    - name: "Py3.6 - Linux - Latest (with Flake8) (Deploy)"
       stage: deploy
       python: "3.6"
       os: linux
-      before_install: python gen_requirements_ci.py --skip isort flake8 yapf
-      install: pip install -r requirements_ci.txt
+      install: pip install -r requirements.txt
       script:
         # only one test with flake8 is sufficient
+        - flake8
+        - isort -rc --check-only --diff torchutils/
+        - yapf -r -d --style .style.yapf torchutils/
+        - coverage run --source torchutils -m unittest discover -v
         - cd docs/
         - make html
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
       deploy:
-        provider: pages   # deploy to github page
+        provider: pages     # deploy to github page
         skip_cleanup: true
         local_dir: docs/_build/html
-        github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard        
+        github_token: $GITHUB_TOKEN     # set in travis-ci.org dashboard        
 
 stages:
     - test
