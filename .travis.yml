@@ -16,7 +16,6 @@ language: python
 
 # PyTorch Version Tests
 # torch==1.0.0 torchvision==0.2.1
-# torch==1.0.1 torchvision==0.2.2
 # torch==1.1.0 torchvision==0.3.0
 # torch==1.2.0 torchvision==0.4.0
 # torch==1.3.0 torchvision==0.4.2
@@ -32,7 +31,7 @@ language: python
 matrix:
   include:      
     - name: "Py3.5 - Linux - Latest"
-      python: "3.6"
+      python: "3.5"
       os: linux
       before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
       install: pip install -r requirements_ci.txt
@@ -51,26 +50,82 @@ matrix:
         - coverage run --source torchutils -m unittest discover -v
 
     - name: "Py3.7 - Linux - Latest"
-      python: "3.6"
+      python: "3.7"
       os: linux
       before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
       install: pip install -r requirements_ci.txt
       script: coverage run --source torchutils -m unittest discover -v
 
-    - name: "Py3.6 - OSX - Latest"
-      python: "3.6"
-      os: osx
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
-      install: pip install -r requirements_ci.txt
-      script: coverage run --source torchutils -m unittest discover -v
+    # - name: "Py3.6 - OSX - Latest"
+    #   python: "3.6"
+    #   os: osx
+    #   before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
+    #   install: pip install -r requirements_ci.txt
+    #   script: coverage run --source torchutils -m unittest discover -v
 
-    - name: "Py3.6 - Linux - torch=1.0.0 torchvision=0.2.1"
+    - name: "Py3.6 - Linux - torch=1.0.0 torchvision=0.2.1 pillow=6.2.0"
       python: "3.6"
       os: linux
-      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch=1.0.0 --torchvision=0.2.1
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.0.0 --torchvision 0.2.1 --pillow 6.2.0
       install: pip install -r requirements_ci.txt
       script:
-        - coverage run --source torchutils -m unittest discover -v      
+        - coverage run --source torchutils -m unittest discover -v 
+
+    - name: "Py3.6 - Linux - torch=1.1.0 torchvision=0.3.0 pillow=6.2.0"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.1.0 --torchvision 0.3.0 --pillow 6.2.0
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - torch=1.2.0 torchvision=0.4.0 pillow=6.2.0"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.2.0 --torchvision 0.4.0 --pillow 6.2.0
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - torch=1.3.0 torchvision=0.4.2 pillow=6.2.0"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch 1.3.0 --torchvision 0.4.2 --pillow 6.2.0
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - numpy=1.16.2"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --numpy 1.16.2
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - numpy=1.16.4"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --numpy 1.16.4
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - numpy=1.17.2"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --numpy 1.17.2
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
+        
+    - name: "Py3.6 - Linux - numpy=1.17.4"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --numpy 1.17.4
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v
 
 stages:
     - test

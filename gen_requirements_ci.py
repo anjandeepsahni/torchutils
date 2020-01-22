@@ -3,7 +3,7 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Install TorchUtils dependencies.')
+        description='Generate requirements_ci.txt.')
     # first read latest requirements file.
     req = open('requirements.txt').read().splitlines()
     # package:version
@@ -12,6 +12,10 @@ def parse_args():
         parser.add_argument('--' + pkg, type=str, default=pkg_version,
                             help=pkg + ' version')
     parser.add_argument('--skip', type=str, nargs='+')
+    args, unknown = parser.parse_known_args()
+    for arg in unknown:
+        if arg.startswith(("-", "--")):
+            parser.add_argument(arg, type=str)
     return parser.parse_args()
 
 
