@@ -94,8 +94,8 @@ Checkpoint:
     print('Checkpoint learning rate:', tu.get_lr(optimizer))
     print('Start from epoch:', start_epoch)
 
+Output ::
 
-    # Output
     Original learning rate: 0.001
     Checkpoint learning rate: 0.1234
     Start epoch: 1
@@ -103,6 +103,7 @@ Checkpoint:
 .. _statistics:
 
 Statistics:
+^^^^^^^^^^^
 
 .. code:: python
 
@@ -120,8 +121,8 @@ Statistics:
     print('Mean:', stats['mean'])
     print('Std:', stats['std'])
 
-    
-    # Output
+Output ::
+
     Calculating dataset stats...
     Batch 100/100
     Mean: tensor([10000.0098,  9999.9795,  9999.9893])
@@ -130,6 +131,7 @@ Statistics:
 .. _`learning rate`:
 
 Learning Rate:
+^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -149,14 +151,15 @@ Learning Rate:
     revised_lr = tu.get_lr(optimizer)
     print('Revised learning rate:', revised_lr)
 
-    
-    # Output
+Output ::
+
     Current learning rate: 0.001
     Revised learning rate: 0.0001
 
 .. _`evaluation metrics`:
 
 Evaluation Metrics:
+^^^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -195,8 +198,8 @@ Evaluation Metrics:
                 # easily print latest and average loss
                 print(loss_tracker)
 
+Output ::
 
-    # Output
     Epoch: 1/1
     Loss - Val: 2.2921 Avg: 2.2921
     Loss - Val: 0.5084 Avg: 0.9639
@@ -264,6 +267,7 @@ Output ::
 .. _`model FLOPs`:
 
 Model FLOPs:
+^^^^^^^^^^^^
 
 .. code:: python
 
@@ -276,13 +280,14 @@ Model FLOPs:
     total_flops = tu.get_model_flops(model, torch.rand((1, 3, 224, 224)))
     print('Total model FLOPs: {:,}'.format(total_flops))
 
+Output ::
 
-    # Output
     Total model FLOPs: 773,304,664
 
 .. _`model parameters`:
 
 Model Parameters:
+^^^^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -294,13 +299,14 @@ Model Parameters:
     total_params = tu.get_model_param_count(model)
     print('Total model params: {:,}'.format(total_params))
 
+Output ::
 
-    # Output
     Total model params: 61,100,840
 
 .. _`random seed`:
 
 Random Seed:
+^^^^^^^^^^^^
 
 .. code:: python
 
@@ -312,6 +318,7 @@ Random Seed:
 .. _`gradient flow`:
 
 Gradient Flow:
+^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -329,11 +336,10 @@ Gradient Flow:
     # save model gradient flow to image
     tu.plot_gradients(net, './grad_figures/grad_01.png', plot_type='line')
 
-
-    # Saved file
+Saved File
 
 .. image:: https://raw.githubusercontent.com/anjandeepsahni/torchutils/master/docs/_static/example_gradient_flow.png
-  :alt: Example Gradient Flow 
+    :alt: Example Gradient Flow 
 
 License
 -------
