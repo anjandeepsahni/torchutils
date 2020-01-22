@@ -12,7 +12,7 @@ TorchUtils
     :target: https://codecov.io/gh/anjandeepsahni/torchutils
 
 .. image:: https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=informational&label=release%20date
-    :alt: GitHub Release Date
+    :target: https://img.shields.io/github/release-date/anjandeepsahni/torchutils
 
 .. image:: https://img.shields.io/github/license/anjandeepsahni/torchutils?color=informational
     :target: https://img.shields.io/github/license/anjandeepsahni/torchutils
