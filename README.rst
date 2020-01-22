@@ -82,10 +82,9 @@ Checkpoint:
     model = torchvision.models.alexnet()
     optimizer = optim.Adam(model.parameters())
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.1)
-
     print('Original learning rate:', tu.get_lr(optimizer))
 
-    # load checkpoint model_20190814-212442_e0_0.7531.pt
+    # load checkpoint
     start_epoch = tu.load_checkpoint(model_path='.',
                             ckpt_name='model_20190814-212442_e0_0.7531.pt',
                             model=model, optimizer=optimizer,
@@ -94,15 +93,17 @@ Checkpoint:
     print('Checkpoint learning rate:', tu.get_lr(optimizer))
     print('Start from epoch:', start_epoch)
 
-    # Output
 
+    # Output
     Original learning rate: 0.001
     Checkpoint learning rate: 0.1234
     Start epoch: 1
 
 .. _statistics:
 
-Statistics::
+Statistics:
+
+.. code:: python
 
     import torch
     import torchutils as tu
@@ -118,8 +119,8 @@ Statistics::
     print('Mean:', stats['mean'])
     print('Std:', stats['std'])
 
+    
     # Output
-
     Calculating dataset stats...
     Batch 100/100
     Mean: tensor([10000.0098,  9999.9795,  9999.9893])
@@ -127,7 +128,9 @@ Statistics::
 
 .. _`learning rate`:
 
-Learning Rate::
+Learning Rate:
+
+.. code:: python
 
     import torchvision
     import torchutils as tu
@@ -145,14 +148,16 @@ Learning Rate::
     revised_lr = tu.get_lr(optimizer)
     print('Revised learning rate:', revised_lr)
 
+    
     # Output
-
     Current learning rate: 0.001
     Revised learning rate: 0.0001
 
 .. _`evaluation metrics`:
 
-Evaluation Metrics::
+Evaluation Metrics:
+
+.. code:: python
 
     import torch
     import torch.nn as nn
@@ -175,27 +180,22 @@ Evaluation Metrics::
     model.train()
     for epoch in range(n_epochs):
         print('Epoch: %d/%d' % (epoch + 1, n_epochs))
-
         # define loss tracker
         loss_tracker = tu.RunningLoss()
-
         for batch_idx, (data, target) in enumerate(trainloader):
             optimizer.zero_grad()
             outputs = model(data)
             loss = criterion(outputs, target)
-
             # update loss tracker with latest loss
             loss_tracker.update(loss.item())
-            
             loss.backward()
             optimizer.step()
-            
             if batch_idx % 100 == 0:
-                # easily pring latest and average loss
+                # easily print latest and average loss
                 print(loss_tracker)
 
-    # Output
 
+    # Output
     Epoch: 1/1
     Loss - Val: 2.2921 Avg: 2.2921
     Loss - Val: 0.5084 Avg: 0.9639
@@ -210,14 +210,18 @@ Evaluation Metrics::
 
 .. _`model summary`:
 
-Model Summary::
+Model Summary:
+
+.. code:: python
 
     import torch
     import torchvision
     import torchutils as tu
 
     model = torchvision.models.alexnet()
+    # easily print model summary
     tu.get_model_summary(model, torch.rand((1, 3, 224, 224)))
+
 
     # Output
 
@@ -258,46 +262,57 @@ Model Summary::
 
 .. _`model FLOPs`:
 
-Model FLOPs::
+Model FLOPs:
+
+.. code:: python
 
     import torch
     import torchvision
     import torchutils as tu
 
     model = torchvision.models.alexnet()
+    # calculate model FLOPs
     total_flops = tu.get_model_flops(model, torch.rand((1, 3, 224, 224)))
     print('Total model FLOPs: {:,}'.format(total_flops))
 
-    # Output
 
+    # Output
     Total model FLOPs: 773,304,664
 
 .. _`model parameters`:
 
-Model Parameters::
+Model Parameters:
+
+.. code:: python
 
     import torchvision
     import torchutils as tu
 
     model = torchvision.models.alexnet()
+    # calculate total model parameters
     total_params = tu.get_model_param_count(model)
     print('Total model params: {:,}'.format(total_params))
 
-    # Output
 
+    # Output
     Total model params: 61,100,840
 
 .. _`random seed`:
 
-Random Seed::
+Random Seed:
+
+.. code:: python
 
     import torchutils as tu
 
+    # set numpy, torch and cuda seed
     tu.set_random_seed(2222)
 
 .. _`gradient flow`:
 
-Gradient Flow::
+Gradient Flow:
+
+.. code:: python
 
     import torch
     import torchvision
@@ -309,7 +324,10 @@ Gradient Flow::
     ground_truth = torch.randint(0, 10, (1, ))
     loss = criterion(out, ground_truth)
     loss.backward()
+    
+    # save model gradient flow to image
     tu.plot_gradients(net, './grad_figures/grad_01.png', plot_type='line')
+
 
     # Saved file
 
