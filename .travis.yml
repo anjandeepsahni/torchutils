@@ -42,6 +42,7 @@ matrix:
       language: shell  # 'language: python' is an error on Travis CI macOS
       os: osx
       before_install:
+        - python --version
         - python3 --version
         - python3 gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
       install: pip3 install -r requirements_ci.txt
