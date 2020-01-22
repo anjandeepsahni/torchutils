@@ -9,7 +9,7 @@ TorchUtils
     :target: https://travis-ci.org/anjandeepsahni/torchutils
 
 .. image:: https://codecov.io/gh/anjandeepsahni/torchutils/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/anjandeepsahni/torchutils
+    :target: https://codecov.io/gh/anjandeepsahni/torchutils
 
 .. image:: https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=informational&label=release%20date
     :alt: GitHub Release Date
