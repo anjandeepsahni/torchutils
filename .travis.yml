@@ -2,18 +2,75 @@
 
 language: python
 
-python:
-    - "3.6"
-    - "3.7"
+# Python    Pytorch     Torchvision     OS
 
-install:            # Install requirement as "Environment Setup Section"
-    - pip install -r requirements.txt
+# Flake8 Tests
 
-script:             # build sphinx document
-    - flake8
-    - isort -rc --check-only --diff torchutils/
-    - yapf -r -d --style .style.yapf torchutils/
-    - coverage run --source torchutils -m unittest discover -v
+## OS Tests
+# 3.6       latest       latest         osx     (requirements.txt with Py3.6 on osx)
+# 3.6       latest       latest         linux   (requirements.txt with Py3.6 on linux)
+
+# Python Tests
+# 3.5       latest       latest         linux   (requirements.txt with Py3.5 on linux)
+# 3.7       latest       latest         linux   (requirements.txt with Py3.7 on linux)
+
+# PyTorch Version Tests
+# torch==1.0.0 torchvision==0.2.1
+# torch==1.0.1 torchvision==0.2.2
+# torch==1.1.0 torchvision==0.3.0
+# torch==1.2.0 torchvision==0.4.0
+# torch==1.3.0 torchvision==0.4.2
+
+# # Numpy Versions
+# 1.16.2
+# 1.16.4
+# 1.17.2
+# 1.17.4
+
+#      language: shell  # 'language: python' is an error on Travis CI macOS
+
+matrix:
+  include:      
+    - name: "Py3.5 - Linux - Latest"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
+      install: pip install -r requirements_ci.txt
+      script: coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - Latest (with Flake8)"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme
+      install: pip install -r requirements_ci.txt
+      script:
+        # only one test with flake8 is sufficient
+        - flake8
+        - isort -rc --check-only --diff torchutils/
+        - yapf -r -d --style .style.yapf torchutils/
+        - coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.7 - Linux - Latest"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
+      install: pip install -r requirements_ci.txt
+      script: coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - OSX - Latest"
+      python: "3.6"
+      os: osx
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
+      install: pip install -r requirements_ci.txt
+      script: coverage run --source torchutils -m unittest discover -v
+
+    - name: "Py3.6 - Linux - torch=1.0.0 torchvision=0.2.1"
+      python: "3.6"
+      os: linux
+      before_install: python gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf --torch=1.0.0 --torchvision=0.2.1
+      install: pip install -r requirements_ci.txt
+      script:
+        - coverage run --source torchutils -m unittest discover -v      
 
 stages:
     - test
