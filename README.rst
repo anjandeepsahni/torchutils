@@ -2,23 +2,29 @@
 TorchUtils
 ==========
 
-.. image:: https://badge.fury.io/py/torchutils.svg
-    :target: https://badge.fury.io/py/torchutils
+.. image:: https://img.shields.io/pypi/v/torchutils?color=success
+    :target: https://img.shields.io/pypi/v/torchutils
+    :alt: PyPI
 
 .. image:: https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master
     :target: https://travis-ci.org/anjandeepsahni/torchutils
+    :alt: Build Status
 
 .. image:: https://codecov.io/gh/anjandeepsahni/torchutils/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/anjandeepsahni/torchutils
+    :alt: Code Coverage
 
 .. image:: https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=informational&label=release%20date
     :target: https://img.shields.io/github/release-date/anjandeepsahni/torchutils
+    :alt: Release Date
 
 .. image:: https://img.shields.io/github/license/anjandeepsahni/torchutils?color=informational
     :target: https://img.shields.io/github/license/anjandeepsahni/torchutils
+    :alt: License
 
 .. image:: https://pepy.tech/badge/torchutils
     :target: https://pepy.tech/badge/torchutils
+    :alt: Downloads
 
 |
 
