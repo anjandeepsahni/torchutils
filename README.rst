@@ -72,6 +72,7 @@ Examples
 .. _checkpoints:
 
 Checkpoint:
+^^^^^^^^^^^
 
 .. code:: python
 
@@ -211,6 +212,7 @@ Evaluation Metrics:
 .. _`model summary`:
 
 Model Summary:
+^^^^^^^^^^^^^^
 
 .. code:: python
 
@@ -222,8 +224,7 @@ Model Summary:
     # easily print model summary
     tu.get_model_summary(model, torch.rand((1, 3, 224, 224)))
 
-
-    # Output
+Output ::
 
     =========================================================================================
     Layer                           Kernel             Output          Params           FLOPs
