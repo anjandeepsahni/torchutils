@@ -36,13 +36,11 @@ matrix:
       install: pip install -r requirements_ci.txt
       script: coverage run --source torchutils -m unittest discover -v
 
-    - name: "Py3.6.5 - OSX - Latest"
-      python: "3.6"
-      osx_image: xcode9.4  # Python 3.6.5 running on macOS 10.13
+    - name: "Py3.7.5 - OSX - Latest"
+      osx_image: xcode9.4  # Python 3.7.5 running on macOS 10.13
       language: shell  # 'language: python' is an error on Travis CI macOS
       os: osx
       before_install:
-        - python --version
         - python3 --version
         - python3 gen_requirements_ci.py --skip sphinx sphinx_rtd_theme isort flake8 yapf
       install: pip3 install -r requirements_ci.txt
