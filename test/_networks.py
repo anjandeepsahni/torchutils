@@ -61,7 +61,7 @@ class _SequenceNetwork(_nn.Module):
     def forward(self, sentences, lens):
         x = _nn.utils.rnn.pad_sequence(sentences)
         x = self.embedding(x)
-        x = _nn.utils.rnn.pack_padded_sequence(x, lens, enforce_sorted=False)
+        x = _nn.utils.rnn.pack_padded_sequence(x, lens)
         x, _ = self.seq(x)
         x, _ = _nn.utils.rnn.pad_packed_sequence(x, batch_first=True)
         x = self.linear(x)
