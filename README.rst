@@ -2,28 +2,28 @@
 TorchUtils
 ==========
 
-.. image:: https://img.shields.io/pypi/v/torchutils?color=success
-    :target: https://img.shields.io/pypi/v/torchutils
-    :alt: PyPI
+.. image:: https://img.shields.io/pypi/v/torchutils?color=blueviolet&label=latest
+    :target: https://github.com/anjandeepsahni/torchutils/releases/latest
+    :alt: Latest Release
+
+.. image:: https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=blueviolet&label=release%20date
+    :target: https://github.com/anjandeepsahni/torchutils/releases/latest
+    :alt: Release Date
 
 .. image:: https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master
     :target: https://travis-ci.org/anjandeepsahni/torchutils
     :alt: Build Status
 
-.. image:: https://codecov.io/gh/anjandeepsahni/torchutils/branch/master/graph/badge.svg
+.. image:: https://img.shields.io/codecov/c/github/anjandeepsahni/torchutils/master
     :target: https://codecov.io/gh/anjandeepsahni/torchutils
     :alt: Code Coverage
 
-.. image:: https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=informational&label=release%20date
-    :target: https://img.shields.io/github/release-date/anjandeepsahni/torchutils
-    :alt: Release Date
-
-.. image:: https://img.shields.io/github/license/anjandeepsahni/torchutils?color=informational
-    :target: https://img.shields.io/github/license/anjandeepsahni/torchutils
-    :alt: License
+.. image:: https://img.shields.io/conda/pn/sahni/torchutils?color=informational&label=platforms
+    :target: https://anaconda.org/sahni/torchutils
+    :alt: Platforms
 
 .. image:: https://pepy.tech/badge/torchutils
-    :target: https://pepy.tech/badge/torchutils
+    :target: https://pepy.tech/project/torchutils
     :alt: Downloads
 
 |
