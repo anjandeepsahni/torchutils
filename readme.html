@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TorchUtils &mdash; torchutils 0.0.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="History" href="changelog.html" />
+    <link rel="prev" title="TorchUtils Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> torchutils
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TorchUtils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#checkpoint">Checkpoint:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#learning-rate">Learning Rate:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluation-metrics">Evaluation Metrics:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-summary">Model Summary:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-flops">Model FLOPs:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-parameters">Model Parameters:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#random-seed">Random Seed:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gradient-flow">Gradient Flow:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">History</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Package Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="checkpoint.html">checkpoint</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learningrate.html">learningrate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualize.html">visualize</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">torchutils</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>TorchUtils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="torchutils">
+<h1>TorchUtils<a class="headerlink" href="#torchutils" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/anjandeepsahni/torchutils/releases/latest"><img alt="Latest Release" src="https://img.shields.io/pypi/v/torchutils?color=blueviolet&amp;label=latest" /></a>
+<a class="reference external image-reference" href="https://github.com/anjandeepsahni/torchutils/releases/latest"><img alt="Release Date" src="https://img.shields.io/github/release-date/anjandeepsahni/torchutils?color=blueviolet&amp;label=release%20date" /></a>
+<a class="reference external image-reference" href="https://travis-ci.org/anjandeepsahni/torchutils"><img alt="Build Status" src="https://travis-ci.org/anjandeepsahni/torchutils.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://codecov.io/gh/anjandeepsahni/torchutils"><img alt="Code Coverage" src="https://img.shields.io/codecov/c/github/anjandeepsahni/torchutils/master" /></a>
+<a class="reference external image-reference" href="https://anaconda.org/sahni/torchutils"><img alt="Platforms" src="https://img.shields.io/conda/pn/sahni/torchutils?color=informational&amp;label=platforms" /></a>
+<a class="reference external image-reference" href="https://pepy.tech/project/torchutils"><img alt="Downloads" src="https://pepy.tech/badge/torchutils" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><strong>TorchUtils</strong> is a Python package providing helpful utility APIs for your
+PyTorch projects.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Save/load <a class="reference internal" href="#checkpoints">checkpoints</a>.</p></li>
+<li><p>Calculate dataset <a class="reference internal" href="#statistics">statistics</a> (mean, std, var). Also calculate and track running statistics of data.</p></li>
+<li><p>Get/set <a class="reference internal" href="#learning-rate">learning rate</a>.</p></li>
+<li><p>Track <a class="reference internal" href="#evaluation-metrics">evaluation metrics</a> such as accuracy, running loss, hamming loss.</p></li>
+<li><p>Print <a class="reference internal" href="#model-summary">model summary</a>. Supports: Linear/MLP, Convolution Network, Recurrent Network (RNN/LSTM/GRU), Recursive Network.</p></li>
+<li><p>Calculate <a class="reference internal" href="#model-flops">model FLOPs</a>.</p></li>
+<li><p>Calculate total <a class="reference internal" href="#model-parameters">model parameters</a>.</p></li>
+<li><p>Set <a class="reference internal" href="#random-seed">random seed</a>.</p></li>
+<li><p>Visualize <a class="reference internal" href="#gradient-flow">gradient flow</a> in your network.</p></li>
+</ul>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>PyTorch &gt;= 1.0.0</p></li>
+<li><p>Numpy &gt;= 1.16.2</p></li>
+<li><p>Matplotlib &gt;= 3.0.3</p></li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>PyPi:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install torchutils
+</pre></div>
+</div>
+<p>Conda:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c sahni torchutils
+</pre></div>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Detailed API documentation is available <a class="reference external" href="https://anjandeepsahni.github.io/torchutils/readme.html">here</a>.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="checkpoint">
+<span id="checkpoints"></span><h3>Checkpoint:<a class="headerlink" href="#checkpoint" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ExponentialLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Original learning rate:&#39;</span><span class="p">,</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span>
+
+<span class="c1"># load checkpoint</span>
+<span class="n">start_epoch</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">load_checkpoint</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                        <span class="n">ckpt_name</span><span class="o">=</span><span class="s1">&#39;model_20190814-212442_e0_0.7531.pt&#39;</span><span class="p">,</span>
+                        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                        <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Checkpoint learning rate:&#39;</span><span class="p">,</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Start from epoch:&#39;</span><span class="p">,</span> <span class="n">start_epoch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Original</span> <span class="n">learning</span> <span class="n">rate</span><span class="p">:</span> <span class="mf">0.001</span>
+<span class="n">Checkpoint</span> <span class="n">learning</span> <span class="n">rate</span><span class="p">:</span> <span class="mf">0.1234</span>
+<span class="n">Start</span> <span class="n">epoch</span><span class="p">:</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="statistics">
+<span id="id1"></span><h3>Statistics:<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="c1"># define your dataset and dataloader</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">()</span>
+<span class="n">trainloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># get statistics</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_dataset_stats</span><span class="p">(</span><span class="n">trainloader</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mean:&#39;</span><span class="p">,</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Std:&#39;</span><span class="p">,</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Calculating</span> <span class="n">dataset</span> <span class="n">stats</span><span class="o">...</span>
+<span class="n">Batch</span> <span class="mi">100</span><span class="o">/</span><span class="mi">100</span>
+<span class="n">Mean</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">10000.0098</span><span class="p">,</span>  <span class="mf">9999.9795</span><span class="p">,</span>  <span class="mf">9999.9893</span><span class="p">])</span>
+<span class="n">Std</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="mf">0.9969</span><span class="p">,</span> <span class="mf">1.0003</span><span class="p">,</span> <span class="mf">0.9972</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="learning-rate">
+<span id="id2"></span><h3>Learning Rate:<a class="headerlink" href="#learning-rate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+<span class="c1"># get learning rate</span>
+<span class="n">current_lr</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Current learning rate:&#39;</span><span class="p">,</span> <span class="n">current_lr</span><span class="p">)</span>
+
+<span class="c1"># set learning rate</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">set_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">current_lr</span><span class="o">*</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">revised_lr</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_lr</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Revised learning rate:&#39;</span><span class="p">,</span> <span class="n">revised_lr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Current</span> <span class="n">learning</span> <span class="n">rate</span><span class="p">:</span> <span class="mf">0.001</span>
+<span class="n">Revised</span> <span class="n">learning</span> <span class="n">rate</span><span class="p">:</span> <span class="mf">0.0001</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="evaluation-metrics">
+<span id="id3"></span><h3>Evaluation Metrics:<a class="headerlink" href="#evaluation-metrics" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchvision.transforms</span> <span class="k">as</span> <span class="nn">transforms</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="c1"># define your network</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyNet</span><span class="p">()</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">trainset</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;./data/&#39;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">transform</span><span class="o">=</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">())</span>
+<span class="n">trainloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">trainset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+                                        <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch: </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_epochs</span><span class="p">))</span>
+    <span class="c1"># define loss tracker</span>
+    <span class="n">loss_tracker</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">RunningLoss</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">batch_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trainloader</span><span class="p">):</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="c1"># update loss tracker with latest loss</span>
+        <span class="n">loss_tracker</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">batch_idx</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># easily print latest and average loss</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">loss_tracker</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Epoch</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">1</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">2.2921</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">2.2921</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.5084</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.9639</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.6027</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.6588</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.1817</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.5255</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.1005</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.4493</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.2982</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.3984</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.3103</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.3615</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.0940</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.3296</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.0957</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.3071</span>
+<span class="n">Loss</span> <span class="o">-</span> <span class="n">Val</span><span class="p">:</span> <span class="mf">0.0229</span> <span class="n">Avg</span><span class="p">:</span> <span class="mf">0.2875</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="model-summary">
+<span id="id4"></span><h3>Model Summary:<a class="headerlink" href="#model-summary" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">()</span>
+<span class="c1"># easily print model summary</span>
+<span class="n">tu</span><span class="o">.</span><span class="n">get_model_summary</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">=========================================================================================</span>
+<span class="n">Layer</span>                           <span class="n">Kernel</span>             <span class="n">Output</span>          <span class="n">Params</span>           <span class="n">FLOPs</span>
+<span class="o">=========================================================================================</span>
+<span class="mi">0</span><span class="n">_features</span><span class="o">.</span><span class="n">Conv2d_0</span>         <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">55</span><span class="p">]</span>       <span class="mi">23</span><span class="p">,</span><span class="mi">296</span>    <span class="mi">70</span><span class="p">,</span><span class="mi">470</span><span class="p">,</span><span class="mi">400</span>
+<span class="mi">1</span><span class="n">_features</span><span class="o">.</span><span class="n">ReLU_1</span>                         <span class="o">-</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">55</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">2</span><span class="n">_features</span><span class="o">.</span><span class="n">MaxPool2d_2</span>                    <span class="o">-</span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">3</span><span class="n">_features</span><span class="o">.</span><span class="n">Conv2d_3</span>         <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>      <span class="mi">307</span><span class="p">,</span><span class="mi">392</span>   <span class="mi">224</span><span class="p">,</span><span class="mi">088</span><span class="p">,</span><span class="mi">768</span>
+<span class="mi">4</span><span class="n">_features</span><span class="o">.</span><span class="n">ReLU_4</span>                         <span class="o">-</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">5</span><span class="n">_features</span><span class="o">.</span><span class="n">MaxPool2d_5</span>                    <span class="o">-</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">6</span><span class="n">_features</span><span class="o">.</span><span class="n">Conv2d_6</span>        <span class="p">[</span><span class="mi">192</span><span class="p">,</span> <span class="mi">384</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">384</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>      <span class="mi">663</span><span class="p">,</span><span class="mi">936</span>   <span class="mi">112</span><span class="p">,</span><span class="mi">205</span><span class="p">,</span><span class="mi">184</span>
+<span class="mi">7</span><span class="n">_features</span><span class="o">.</span><span class="n">ReLU_7</span>                         <span class="o">-</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">384</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">8</span><span class="n">_features</span><span class="o">.</span><span class="n">Conv2d_8</span>        <span class="p">[</span><span class="mi">384</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>      <span class="mi">884</span><span class="p">,</span><span class="mi">992</span>   <span class="mi">149</span><span class="p">,</span><span class="mi">563</span><span class="p">,</span><span class="mi">648</span>
+<span class="mi">9</span><span class="n">_features</span><span class="o">.</span><span class="n">ReLU_9</span>                         <span class="o">-</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">10</span><span class="n">_features</span><span class="o">.</span><span class="n">Conv2d_10</span>      <span class="p">[</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>      <span class="mi">590</span><span class="p">,</span><span class="mi">080</span>    <span class="mi">99</span><span class="p">,</span><span class="mi">723</span><span class="p">,</span><span class="mi">520</span>
+<span class="mi">11</span><span class="n">_features</span><span class="o">.</span><span class="n">ReLU_11</span>                       <span class="o">-</span>   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">12</span><span class="n">_features</span><span class="o">.</span><span class="n">MaxPool2d_12</span>                  <span class="o">-</span>     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">13</span><span class="n">_classifier</span><span class="o">.</span><span class="n">Dropout_0</span>                   <span class="o">-</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9216</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">14</span><span class="n">_classifier</span><span class="o">.</span><span class="n">Linear_1</span>         <span class="p">[</span><span class="mi">9216</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>   <span class="mi">37</span><span class="p">,</span><span class="mi">752</span><span class="p">,</span><span class="mi">832</span>    <span class="mi">75</span><span class="p">,</span><span class="mi">493</span><span class="p">,</span><span class="mi">376</span>
+<span class="mi">15</span><span class="n">_classifier</span><span class="o">.</span><span class="n">ReLU_2</span>                      <span class="o">-</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">16</span><span class="n">_classifier</span><span class="o">.</span><span class="n">Dropout_3</span>                   <span class="o">-</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">17</span><span class="n">_classifier</span><span class="o">.</span><span class="n">Linear_4</span>         <span class="p">[</span><span class="mi">4096</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>   <span class="mi">16</span><span class="p">,</span><span class="mi">781</span><span class="p">,</span><span class="mi">312</span>    <span class="mi">33</span><span class="p">,</span><span class="mi">550</span><span class="p">,</span><span class="mi">336</span>
+<span class="mi">18</span><span class="n">_classifier</span><span class="o">.</span><span class="n">ReLU_5</span>                      <span class="o">-</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">]</span>            <span class="mi">0</span>             <span class="mi">0</span>
+<span class="mi">19</span><span class="n">_classifier</span><span class="o">.</span><span class="n">Linear_6</span>         <span class="p">[</span><span class="mi">4096</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]</span>          <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]</span>    <span class="mi">4</span><span class="p">,</span><span class="mi">097</span><span class="p">,</span><span class="mi">000</span>     <span class="mi">8</span><span class="p">,</span><span class="mi">191</span><span class="p">,</span><span class="mi">000</span>
+<span class="o">=========================================================================================</span>
+<span class="n">Total</span> <span class="n">params</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">840</span>
+<span class="n">Trainable</span> <span class="n">params</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">840</span>
+<span class="n">Non</span><span class="o">-</span><span class="n">trainable</span> <span class="n">params</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Total</span> <span class="n">FLOPs</span><span class="p">:</span> <span class="mi">773</span><span class="p">,</span><span class="mi">286</span><span class="p">,</span><span class="mi">232</span> <span class="o">/</span> <span class="mf">773.29</span> <span class="n">MFLOPs</span>
+<span class="o">-----------------------------------------------------------------------------------------</span>
+<span class="n">Input</span> <span class="n">size</span> <span class="p">(</span><span class="n">MB</span><span class="p">):</span> <span class="mf">0.57</span>
+<span class="n">Forward</span><span class="o">/</span><span class="n">backward</span> <span class="k">pass</span> <span class="n">size</span> <span class="p">(</span><span class="n">MB</span><span class="p">):</span> <span class="mf">8.31</span>
+<span class="n">Params</span> <span class="n">size</span> <span class="p">(</span><span class="n">MB</span><span class="p">):</span> <span class="mf">233.08</span>
+<span class="n">Estimated</span> <span class="n">Total</span> <span class="n">Size</span> <span class="p">(</span><span class="n">MB</span><span class="p">):</span> <span class="mf">241.96</span>
+<span class="o">=========================================================================================</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="model-flops">
+<span id="id5"></span><h3>Model FLOPs:<a class="headerlink" href="#model-flops" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">()</span>
+<span class="c1"># calculate model FLOPs</span>
+<span class="n">total_flops</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_model_flops</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total model FLOPs: </span><span class="si">{:,}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_flops</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Total</span> <span class="n">model</span> <span class="n">FLOPs</span><span class="p">:</span> <span class="mi">773</span><span class="p">,</span><span class="mi">304</span><span class="p">,</span><span class="mi">664</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="model-parameters">
+<span id="id6"></span><h3>Model Parameters:<a class="headerlink" href="#model-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">()</span>
+<span class="c1"># calculate total model parameters</span>
+<span class="n">total_params</span> <span class="o">=</span> <span class="n">tu</span><span class="o">.</span><span class="n">get_model_param_count</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total model params: </span><span class="si">{:,}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_params</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Total</span> <span class="n">model</span> <span class="n">params</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">840</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="random-seed">
+<span id="id7"></span><h3>Random Seed:<a class="headerlink" href="#random-seed" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="c1"># set numpy, torch and cuda seed</span>
+<span class="n">tu</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="mi">2222</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="gradient-flow">
+<span id="id8"></span><h3>Gradient Flow:<a class="headerlink" href="#gradient-flow" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">import</span> <span class="nn">torchutils</span> <span class="k">as</span> <span class="nn">tu</span>
+
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">alexnet</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
+<span class="n">ground_truth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">))</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="c1"># save model gradient flow to image</span>
+<span class="n">tu</span><span class="o">.</span><span class="n">plot_gradients</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="s1">&#39;./grad_figures/grad_01.png&#39;</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Saved File</p>
+<img alt="Example Gradient Flow" src="https://raw.githubusercontent.com/anjandeepsahni/torchutils/master/docs/_static/example_gradient_flow.png" />
+</div>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>TorchUtils is distributed under the MIT license, see LICENSE.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="TorchUtils Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Anjandeep Singh Sahni
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
