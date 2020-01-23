@@ -55,6 +55,7 @@ class _TestMetrics(_unittest.TestCase):
         # check history values
         test_acc = (test_acc[-5:] * 10.0).float().numpy()
         result_acc = _np.array(history["metric"])
+        print(str(test_acc), ' ', str(result_acc), flush=True)
         # to str for floating point error
         self.assertTrue(str(test_acc) == str(result_acc))
 
@@ -119,8 +120,7 @@ class _TestMetrics(_unittest.TestCase):
                 row = int(loc_item / 10)
                 col = loc_item % 10
                 predictions[row][col] = int(not predictions[row][col])
-            batch_loss = hamming_loss.update(
-                targets.type(_torch.bool), predictions.type(_torch.bool))
+            batch_loss = hamming_loss.update(targets, predictions)
             self.assertAlmostEqual(batch_loss, test_loss[i].item() / 50)
         test_final_loss = test_loss.sum().item() / (len(test_loss) * 50)
         result_final_loss = hamming_loss.loss
