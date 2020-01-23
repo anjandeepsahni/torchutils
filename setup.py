@@ -17,4 +17,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ], keywords='machine-learning deep-learning pytorch neuralnetwork',
-    license='MIT')
+    install_requires=['torch>=1.0.0', 'numpy>=1.16.2',
+                      'matplotlib>=3.0.3'], license='MIT')
