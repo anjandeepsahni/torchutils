@@ -68,7 +68,7 @@ class RunningStat():
         _validate_param(data, 'data', 'tensor')
         # validate data size
         dsize = data.size()
-        if data.ndim != 2:
+        if len(dsize) != 2:
             raise ValueError("data must be of shape (N,{})"
                              " but got {}.".format(self._dims, tuple(dsize)))
         # loop over all data points
@@ -169,7 +169,7 @@ def get_dataset_stats(loader, verbose=False):
             print(
                 'Batch {:>{ch}}/{}'.format(batch_idx + 1, nbatches,
                                            ch=nbatches_char), end="\r")
-        if data.ndim == 4:
+        if len(data.size()) == 4:
             data = data.reshape(data.size(0), data.size(1), -1)
             data = data.permute(0, 2, 1)
             data = data.reshape(-1, data.size(2))

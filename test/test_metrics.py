@@ -53,9 +53,9 @@ class _TestMetrics(_unittest.TestCase):
         self.assertEqual(len(history["metric"]), 5)
         self.assertEqual(len(history["iteration"]), 5)
         # check history values
-        test_acc = (test_acc[-5:] * 10.0).numpy()
+        test_acc = (test_acc[-5:] * 10.0).float().numpy()
         result_acc = _np.array(history["metric"])
-        print(str(test_acc), ' ', str(result_acc))
+        print(str(test_acc), ' ', str(result_acc), flush=True)
         # to str for floating point error
         self.assertTrue(str(test_acc) == str(result_acc))
 
@@ -110,6 +110,7 @@ class _TestMetrics(_unittest.TestCase):
             # generate random
             targets = _torch.randint(1, 10, (5, 10)) > 7
             print('targets.dtype ', targets.dtype)
+            targets = targets.type(_torch.uint8)
             targets = targets.bool()
             predictions = targets.clone()
             print('predictions.dtype ', predictions.dtype)
@@ -119,8 +120,9 @@ class _TestMetrics(_unittest.TestCase):
                 loc_item = loc.item()
                 row = int(loc_item / 10)
                 col = loc_item % 10
-                predictions[row][col] = not predictions[row][col]
-            batch_loss = hamming_loss.update(targets, predictions)
+                predictions[row][col] = int(not predictions[row][col])
+            batch_loss = hamming_loss.update(
+                targets.type(_torch.bool), predictions.type(_torch.bool))
             self.assertAlmostEqual(batch_loss, test_loss[i].item() / 50)
         test_final_loss = test_loss.sum().item() / (len(test_loss) * 50)
         result_final_loss = hamming_loss.loss
