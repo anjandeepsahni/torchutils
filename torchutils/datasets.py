@@ -68,7 +68,7 @@ class RunningStat():
         _validate_param(data, 'data', 'tensor')
         # validate data size
         dsize = data.size()
-        if data.ndim != 2:
+        if len(dsize) != 2:
             raise ValueError("data must be of shape (N,{})"
                              " but got {}.".format(self._dims, tuple(dsize)))
         # loop over all data points
@@ -153,7 +153,7 @@ def get_dataset_stats(loader, verbose=False):
     sample, _ = loader.dataset[0]
     sample.unsqueeze_(0)
     _validate_param(sample, 'Dataset sample', 'tensor')
-    if sample.ndim not in {2, 4}:
+    if len(sample.size()) not in {2, 4}:
         raise ValueError("Only data with shapes (N,C) and (N,C,H,W) are"
                          " currently supported. Recieved data with "
                          "shape {}.".format(tuple(sample.size())))
@@ -169,7 +169,7 @@ def get_dataset_stats(loader, verbose=False):
             print(
                 'Batch {:>{ch}}/{}'.format(batch_idx + 1, nbatches,
                                            ch=nbatches_char), end="\r")
-        if data.ndim == 4:
+        if len(data.size()) == 4:
             data = data.reshape(data.size(0), data.size(1), -1)
             data = data.permute(0, 2, 1)
             data = data.reshape(-1, data.size(2))

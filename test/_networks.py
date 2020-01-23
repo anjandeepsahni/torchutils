@@ -9,7 +9,6 @@ class _CoverageNetwork(_nn.Module):
         self.features = _nn.Sequential(
             _nn.Upsample(scale_factor=1, mode='nearest'),
             _nn.Upsample(scale_factor=1, mode='bilinear'),
-            _nn.Upsample(scale_factor=1, mode='bicubic'),
             _nn.Conv2d(3, 64, kernel_size=7), _nn.LeakyReLU(inplace=True),
             _nn.BatchNorm2d(64))
         self.avgpool = _nn.AvgPool2d(kernel_size=7)
@@ -61,7 +60,7 @@ class _SequenceNetwork(_nn.Module):
     def forward(self, sentences, lens):
         x = _nn.utils.rnn.pad_sequence(sentences)
         x = self.embedding(x)
-        x = _nn.utils.rnn.pack_padded_sequence(x, lens, enforce_sorted=False)
+        x = _nn.utils.rnn.pack_padded_sequence(x, lens)
         x, _ = self.seq(x)
         x, _ = _nn.utils.rnn.pad_packed_sequence(x, batch_first=True)
         x = self.linear(x)
