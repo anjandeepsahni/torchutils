@@ -47,18 +47,20 @@ Features
 Requirements
 ------------
 
-Latest tests use the following package versions:
-
-* Numpy == 1.17.4
-* PyTorch == 1.4.0
-* Matplotlib == 3.1.1
+* PyTorch >= 1.0.0
+* Numpy >= 1.16.2
+* Matplotlib >= 3.0.3
 
 Installation
 ------------
 
-::
+PyPi::
 
     $ pip install torchutils
+
+Conda::
+
+    $ conda install -c sahni torchutils
 
 Documentation
 -------------

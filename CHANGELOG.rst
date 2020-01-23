@@ -1,6 +1,14 @@
 History
 =======
 
+0.0.4 (2020-01-23)
+---------------------
+
+New features:
+
+* Now compatibile with PyTorch >= 1.0.0. Previously, >= 1.3.0.
+
+
 0.0.3 (2020-01-21)
 ---------------------
 
@@ -22,7 +30,6 @@ Deprecations:
 
 * get_current_lr() is deprecated, use get_lr() instead.
 * set_current_lr() is deprecated, use set_lr() instead.
-
 
 
 0.0.2 (2019-08-24)
