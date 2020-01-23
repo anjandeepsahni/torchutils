@@ -9,7 +9,7 @@ class _CoverageNetwork(_nn.Module):
         self.features = _nn.Sequential(
             _nn.Upsample(scale_factor=1, mode='nearest'),
             _nn.Upsample(scale_factor=1, mode='bilinear'),
-            _nn.Upsample(scale_factor=1, mode='bicubic'),
+            _nn.Upsample(scale_factor=1, mode='linear'),
             _nn.Conv2d(3, 64, kernel_size=7), _nn.LeakyReLU(inplace=True),
             _nn.BatchNorm2d(64))
         self.avgpool = _nn.AvgPool2d(kernel_size=7)

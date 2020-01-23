@@ -55,7 +55,6 @@ class _TestMetrics(_unittest.TestCase):
         # check history values
         test_acc = (test_acc[-5:] * 10.0).float().numpy()
         result_acc = _np.array(history["metric"])
-        print(str(test_acc), ' ', str(result_acc), flush=True)
         # to str for floating point error
         self.assertTrue(str(test_acc) == str(result_acc))
 
@@ -111,7 +110,6 @@ class _TestMetrics(_unittest.TestCase):
             targets = _torch.randint(1, 10, (5, 10)) > 7
             print('targets.dtype ', targets.dtype)
             targets = targets.type(_torch.uint8)
-            targets = targets.bool()
             predictions = targets.clone()
             print('predictions.dtype ', predictions.dtype)
             # setup incorrect predictions.
