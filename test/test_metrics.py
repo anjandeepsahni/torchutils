@@ -55,7 +55,6 @@ class _TestMetrics(_unittest.TestCase):
         # check history values
         test_acc = (test_acc[-5:] * 10.0).float().numpy()
         result_acc = _np.array(history["metric"])
-        print(str(test_acc), ' ', str(result_acc), flush=True)
         # to str for floating point error
         self.assertTrue(str(test_acc) == str(result_acc))
 
@@ -109,10 +108,8 @@ class _TestMetrics(_unittest.TestCase):
         for i in range(10):
             # generate random
             targets = _torch.randint(1, 10, (5, 10)) > 7
-            print('targets.dtype ', targets.dtype)
             targets = targets.type(_torch.uint8)
             predictions = targets.clone()
-            print('predictions.dtype ', predictions.dtype)
             # setup incorrect predictions.
             incorrect = _torch.randperm(50)[:test_loss[i]]
             for loc in incorrect:
@@ -130,7 +127,7 @@ class _TestMetrics(_unittest.TestCase):
         self.assertEqual(len(history["metric"]), 10)
         self.assertEqual(len(history["iteration"]), 10)
         # check history values
-        test_loss = (test_loss / 50.0).numpy().round(4)
+        test_loss = (test_loss / 50.0).float().numpy().round(4)
         result_loss = _np.array(history["metric"]).round(4)
         # to str for floating point error
         self.assertTrue(str(test_loss) == str(result_loss))

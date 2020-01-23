@@ -39,7 +39,7 @@ class _TestModels(_unittest.TestCase):
         with _warnings.catch_warnings():
             _warnings.filterwarnings("ignore", category=UserWarning)
             model = _CoverageNetwork()
-            samplenet_flops = 5395219
+            samplenet_flops = 4786051
             flops = _tu.get_model_flops(model, _torch.rand((1, 3, 28, 28)))
             self.assertAlmostEqual(flops, samplenet_flops)
 
@@ -48,7 +48,7 @@ class _TestModels(_unittest.TestCase):
         with _warnings.catch_warnings():
             _warnings.filterwarnings("ignore", category=UserWarning)
             model = _CoverageNetwork()
-            samplenet_mflops = 5.4
+            samplenet_mflops = 4.79
             mflops = _tu.get_model_flops(model, _torch.rand((1, 3, 28, 28)),
                                          unit='MFLOP')
             self.assertAlmostEqual(mflops, samplenet_mflops)
@@ -58,7 +58,7 @@ class _TestModels(_unittest.TestCase):
         with _warnings.catch_warnings():
             _warnings.filterwarnings("ignore", category=UserWarning)
             model = _CoverageNetwork()
-            samplenet_gflops = 0.01
+            samplenet_gflops = 0.0
             gflops = _tu.get_model_flops(model, _torch.rand((1, 3, 28, 28)),
                                          unit='GFLOP')
             self.assertAlmostEqual(gflops, samplenet_gflops)
