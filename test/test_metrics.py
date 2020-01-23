@@ -130,6 +130,7 @@ class _TestMetrics(_unittest.TestCase):
         test_loss = (test_loss / 50.0).float().numpy().round(4)
         result_loss = _np.array(history["metric"]).round(4)
         # to str for floating point error
+        print(str(test_loss), ' ', str(result_loss))
         self.assertTrue(str(test_loss) == str(result_loss))
 
 
