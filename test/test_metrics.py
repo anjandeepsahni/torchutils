@@ -121,21 +121,15 @@ class _TestMetrics(_unittest.TestCase):
             self.assertAlmostEqual(batch_loss, test_loss[i].item() / 50)
         test_final_loss = test_loss.sum().item() / (len(test_loss) * 50)
         result_final_loss = hamming_loss.loss
-        print('test_final_loss ', test_final_loss)
-        print('result_final_loss ', result_final_loss)
         self.assertAlmostEqual(result_final_loss, test_final_loss)
         # check history size
         history = hamming_loss.history
         self.assertEqual(len(history["metric"]), 10)
         self.assertEqual(len(history["iteration"]), 10)
         # check history values
-        print('test_loss ', test_loss)
-        print('history["metric"] ', history["metric"])
         test_loss = (test_loss.float() / 50.0).numpy().round(4)
         result_loss = _np.array(history["metric"]).round(4)
         # to str for floating point error
-        print('test_loss ', str(test_loss), ' ', 'result_loss ',
-              str(result_loss))
         self.assertTrue(str(test_loss) == str(result_loss))
 
 
