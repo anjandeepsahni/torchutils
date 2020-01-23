@@ -4,6 +4,7 @@ condapath="${HOME}/opt/miniconda3"
 
 # upload packages to conda
 echo "Uploading conda package ..."
+anaconda login
 find $condapath/conda-bld -name "*${version}*.tar.bz2" | while read file
 do
     echo $filech

@@ -18,7 +18,7 @@ then
     echo "First argument should be either \"test\" or version."
     exit -1
 else
-    files="dist/torchutils_test-${1}*"
+    files="dist/torchutils-${1}*"
 fi
 
 if [ $1 == "test" ]
